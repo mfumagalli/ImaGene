@@ -1,1 +1,3 @@
-# ImaGene
+
+Ignore this folder.
+
