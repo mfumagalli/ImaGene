@@ -39,9 +39,9 @@ fi
 
 # Then you need to define parameters on the genomic locus to estimate. These parameters are the length (in bp), mutation and recombination rate. You should need to specify how many samples (e.g. haplotypes) you wish to extract from the simulations. Be aware that mutation and recombination rates are scaled in 4*Ne*length, and therefore you need to use the sample NREF specified in the step above.
 
-LEN=75000 # length of the locus in bp
-THETA=45 # mutation rate in 4*Ne*LEN scale; 60 corresponds to 1.5e-8 for Ne=10,000 and 100,000 bp length
-RHO=30 # recombination rate (rho); 40 corresponds to 1e-8 for Ne=10,000 and 100,000 bp length
+LEN=10000 # length of the locus in bp
+THETA=60 # mutation rate in 4*Ne*LEN scale; 60 corresponds to 1.5e-8 for Ne=10,000 and 100,000 bp length
+RHO=40 # recombination rate (rho); 40 corresponds to 1e-8 for Ne=10,000 and 100,000 bp length
 
 NCHROMS=128 # number of haplotypes (chromosomes) to extract: 198 matches the number of  unrelated CEU samples in 1000 Genomes Project data
 
@@ -55,12 +55,13 @@ FREQ=`bc <<< 'scale=4; 1/200'` # frequency of selected allele at start of select
 
 SELRANGE=`seq 0 10 400` # range and step for the selection coefficient to be estimated in 2*Ne units;
 
-NREPL=2000 # this is the number of replicates (simulations) per value of selection coefficient to be estimated
+NREPL=20000 # this is the number of replicates (simulations) per value of selection coefficient to be estimated
 
 # time for the start of selection in 4*Nref generations; e.g. 800/40000 is at 20kya, with Ne=10k and 25 years as gen time.
 for SEL in $SELRANGE
 do
-    for SELTIME in `bc <<< 'scale=4; 600/40000'` `bc <<< 'scale=4; 700/40000'` `bc <<< 'scale=4; 800/40000'` `bc <<< 'scale=4; 900/40000'` `bc <<< 'scale=4; 1000/40000'`
+    # for SELTIME in `bc <<< 'scale=4; 600/40000'` `bc <<< 'scale=4; 700/40000'` `bc <<< 'scale=4; 800/40000'` `bc <<< 'scale=4; 900/40000'` `bc <<< 'scale=4; 1000/40000'`
+    for SELTIME in `bc <<< 'scale=4; 400/40000'`
     do
         java -jar $1 -N $NREF -ms $NCHROMS $NREPL -t $THETA -r $RHO $LEN -Sp $SELPOS -SI $SELTIME 1 $FREQ -SAA $(($SEL*2)) -SAa $SEL -Saa 0 $DEMO -thread 2 | gzip > $2/msms..$SEL..$SELTIME..txt.gz
     done

@@ -356,23 +356,28 @@ class ImaGene:
         self.target = np.zeros(len(self.data), dtype='float32')
         # assign labels as closest class
         for i in range(len(self.target)):
+            # reinitialise
+            self.target[i] = self.description[i][self.parameter_name]
             self.target[i] = self.classes[np.argsort(np.abs(self.target[i] - self.classes))[0]]
         # for binary classification
         if len(self.classes) == 2:
             self.target = np.asarray(np.where(self.target==self.target.min(), 0, 1)).astype('float32')
         else:
-            # for multiclassification
-            for i in range(len(self.target)):
-                self.target[i] = int(np.where(self.classes==self.target[i])[0]) + np.random.randint(low=-wiggle, high=wiggle+1)
-            self.target[np.where(self.target < 0)] = 0
-            self.target[np.where(self.target > (nr_classes - 1))] = nr_classes - 1
-            self.target = to_categorical(self.target, nr_classes, dtype='float32')
-            # if distribution:
-            if sd > 0:
+            if (sd > 0) or (wiggle > 0): 
+                # for multiclassification
                 for i in range(len(self.target)):
-                    probs = scipy.stats.norm.pdf(range(nr_classes), loc=np.argmax(self.target[i]), scale=sd)
-                    self.target[i] = probs / probs.sum()
-                    del probs
+                    self.target[i] = int(np.where(self.classes==self.target[i])[0]) + np.random.randint(low=-wiggle, high=wiggle+1)
+                self.target[np.where(self.target < 0)] = 0
+                self.target[np.where(self.target > (len(self.classes) - 1))] = len(self.classes) - 1
+                self.target = to_categorical(self.target, len(self.classes), dtype='float32')
+                # if distribution:
+                if sd > 0:
+                    for i in range(len(self.target)):
+                        probs = scipy.stats.norm.pdf(range(len(self.classes)), loc=np.argmax(self.target[i]), scale=sd)
+                        self.target[i] = probs / probs.sum()
+                        del probs
+            else:
+                self.target = to_categorical(self.target, len(self.classes), dtype='float32')
         return 0
 
     def shuffle(self, index=[]):
@@ -442,14 +447,14 @@ class ImaNet:
 
         plt.figure()
 
-        if len(self.history.history['acc']) > 0:
+        if 'acc' in self.history.history:
             acc = self.history.history['acc']
             val_acc = self.history.history['val_acc']
             plt.plot(epochs, acc, 'bo', label='Training acc')
             plt.plot(epochs, val_acc, 'b', label='Validation acc')
             plt.title('Training and validation accuracy')
             plt.legend()
-        elif len(self.history.history['mae']) > 0:
+        elif 'mae' in self.history.history:
             mae = self.history.history['mae']
             val_mae = self.history.history['val_mae']
             plt.plot(epochs, mae, 'bo', label='Training mae')
@@ -476,7 +481,7 @@ class ImaNet:
         score = self.net.evaluate(self.gene.data[-nr_test:,:,:,:], y, batch_size=None)
         return score
 
-    def predict(self, gene, visualise=True):
+    def predict(self, gene, visualise=True, verbose=1):
         """
         Predict new gene
         """
@@ -486,10 +491,11 @@ class ImaNet:
         BF = (1 - probs[0][0]) / probs[0][0]
         samples_distr = np.random.choice(self.gene.classes, size = 100000, replace = True, p = probs[0]) 
         HPD = pymc3.stats.hpd(samples_distr, alpha = 0.05)
-        print('MLE (', str(round(MLE,2)), ')')
-        print('MAP (', str(MAP), ')')
-        print('BF (', str(round(BF,2)), ')')
-        print('HPD (', str(HPD), ')')
+        if verbose > 0:
+            print('MLE (', str(round(MLE,2)), ')')
+            print('MAP (', str(MAP), ')')
+            print('BF (', str(round(BF,2)), ')')
+            print('HPD (', str(HPD), ')')
 
         if visualise == True:
             plt.figure()
