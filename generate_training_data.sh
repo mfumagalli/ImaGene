@@ -12,3 +12,17 @@ do
 	done
 done
 
+
+# de novo, 15kya
+
+for repetition in 2
+do
+        for model in 1 2 3
+        do
+                FNAME=/home/mfumagal/Data/ImaGene/Simulations$repetition.Epoch$model
+                mkdir -p $FNAME
+                echo $FNAME
+                bash Scripts/simulations_denovo.sh /home/mfumagal/Software/msms/lib/msms.jar $FNAME $model
+        done
+done
+

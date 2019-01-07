@@ -307,9 +307,9 @@ class ImaGene:
             return 1
         return 0
 
-    def convert(self, normalise=False):
+    def convert(self, normalise=False, flip=True):
         """
-        Check for correct data type and convert otherwise. Convert to float numpy arrays [0,1] too.
+        Check for correct data type and convert otherwise. Convert to float numpy arrays [0,1] too. If flip true, then flips 0-1
         """
         # if list, put is as numpy array
         if type(self.data) == list:
@@ -334,6 +334,11 @@ class ImaGene:
                 std = self.data[i].std()
                 self.data[i] -= mean
                 self.data[i] /= std
+        # flip
+        if flip==True:
+            print('Flipping values.')
+            for i in range(len(self.data)):
+                self.data[i] = 1. - self.data[i]
         print('A numpy array with dimensions', self.data.shape, 'and target with length', len(self.target), 'and', len(self.classes), 'classes.')
         return 0
 
@@ -440,12 +445,16 @@ class ImaNet:
         val_loss = self.history.history['val_loss']
         epochs = range(1, len(loss) + 1)
 
+        plt.figure()
+
+        plt.subplot(211)
+
         plt.plot(epochs, loss, 'bo', label='Training loss')
         plt.plot(epochs, val_loss, 'b', label='Validation loss')
         plt.title('Training and validation loss')
         plt.legend()
 
-        plt.figure()
+        plt.subplot(212)
 
         if 'acc' in self.history.history:
             acc = self.history.history['acc']
