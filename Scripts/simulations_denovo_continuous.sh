@@ -51,20 +51,19 @@ NCHROMS=128 # number of haplotypes (chromosomes) to extract: 198 matches the num
 
 SELPOS=`bc <<< 'scale=2; 1/2'` # relative position of selected allele; the example here indicates that the selected allele sits in the middle of the locus
 
-FREQ=`bc <<< 'scale=4; 1/20000'` # frequency of selected allele at start of selection; here de novo, 1/2N
+FREQ=`bc <<< 'scale=6; 1/20000'` # frequency of selected allele at start of selection; here de novo, 1/2N
 
-SELRANGE=`seq 0 1 400` # range and step for the selection coefficient to be estimated in 2*Ne units;
+# SELRANGE=`seq 0 1 400` # range and step for the selection coefficient to be estimated in 2*Ne units;
 
-NREPL=1000 # this is the number of replicates (simulations) per value of selection coefficient to be estimated
+NREPL=500000 # this is the number of replicates (simulations) per value of selection coefficient to be estimated
+
+SELTIME=`bc <<< 'scale=4; 600/40000'` # 15kya
 
 # time for the start of selection in 4*Nref generations; e.g. 800/40000 is at 20kya, with Ne=10k and 25 years as gen time.
-for SEL in $SELRANGE
+for i in {1..500000}
 do
-    # for SELTIME in `bc <<< 'scale=4; 600/40000'` `bc <<< 'scale=4; 700/40000'` `bc <<< 'scale=4; 800/40000'` `bc <<< 'scale=4; 900/40000'` `bc <<< 'scale=4; 1000/40000'`
-    for SELTIME in `bc <<< 'scale=4; 600/40000'` # 15kya
-    do
-        java -jar $1 -N $NREF -ms $NCHROMS $NREPL -t $THETA -r $RHO $LEN -Sp $SELPOS -SI $SELTIME 1 $FREQ -SAA $(($SEL*2)) -SAa $SEL -Saa 0 $DEMO -thread 2 | gzip > $2/msms..$SEL..$SELTIME..txt.gz
-    done
+    SEL=`shuf -i 0-800 -n 1`
+    java -jar $1 -N $NREF -ms $NCHROMS 1 -t $THETA -r $RHO $LEN -Sp $SELPOS -SI $SELTIME 1 $FREQ -SAA $(($SEL*2)) -SAa $SEL -Saa 0 $DEMO -thread 2 | gzip > $2/msms..$SEL..$SELTIME..txt.gz
 done
 
 
