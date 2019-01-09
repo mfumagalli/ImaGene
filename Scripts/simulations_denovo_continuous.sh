@@ -55,15 +55,17 @@ FREQ=`bc <<< 'scale=6; 1/20000'` # frequency of selected allele at start of sele
 
 # SELRANGE=`seq 0 1 400` # range and step for the selection coefficient to be estimated in 2*Ne units;
 
-NREPL=500000 # this is the number of replicates (simulations) per value of selection coefficient to be estimated
+#NREPL=500000 # this is the number of replicates (simulations) per value of selection coefficient to be estimated
 
 SELTIME=`bc <<< 'scale=4; 600/40000'` # 15kya
 
 # time for the start of selection in 4*Nref generations; e.g. 800/40000 is at 20kya, with Ne=10k and 25 years as gen time.
-for i in {1..500000}
+COUNT=0
+for i in {1..100000}
 do
+    (( COUNT++ ))
     SEL=`shuf -i 0-800 -n 1`
-    java -jar $1 -N $NREF -ms $NCHROMS 1 -t $THETA -r $RHO $LEN -Sp $SELPOS -SI $SELTIME 1 $FREQ -SAA $(($SEL*2)) -SAa $SEL -Saa 0 $DEMO -thread 2 | gzip > $2/msms..$SEL..$SELTIME..txt.gz
+    java -jar $1 -N $NREF -ms $NCHROMS 1 -t $THETA -r $RHO $LEN -Sp $SELPOS -SI $SELTIME 1 $FREQ -SAA $(($SEL*2)) -SAa $SEL -Saa 0 -Smark $DEMO -thread 4 | gzip > $2/msms..$SEL..$COUNT..txt.gz
 done
 
 

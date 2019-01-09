@@ -20,7 +20,7 @@ import pydot
 import _pickle as pickle
 
 #
-get_ipython().run_line_magic('run', '-i /home/mfumagal/Software/ImaGene/ImaGene.py')
+get_ipython().run_line_magic('run', '-i /rds/general/user/mfumagal/home/Software/ImaGene/ImaGene.py')
 
 myfile = ImaFile(simulations_folder='/home/mfumagal/Data/ImaGene/Simulations1.Epoch1', nr_samples=128, model_name='Marth-1epoch-CEU')
 
