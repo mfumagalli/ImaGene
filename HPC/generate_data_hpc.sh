@@ -17,7 +17,7 @@ repetition=$(( $(( $PBS_ARRAY_INDEX - $(( A*EACH )) )) + 1 ))
 FNAME=$DIRDATA/Simulations$repetition.Epoch$model
 echo $FNAME
 mkdir -p $FNAME
-bash $DIRSOFT/ImaGene/Scripts/simulate.sh $DIRSOFT/msms/lib/msms.jar $FNAME $model
+bash $DIRSOFT/ImaGene/simulate.sh $DIRSOFT/msms/lib/msms.jar $FNAME $model
 
 date
 
