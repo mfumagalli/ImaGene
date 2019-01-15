@@ -55,7 +55,8 @@ FREQ=`bc <<< 'scale=6; 1/20000'` # frequency of selected allele at start of sele
 
 SELRANGE=`seq 0 1 799` # range and step for the selection coefficient to be estimated in 2*Ne units;
 
-NREPL=125 # this is the number of replicates (simulations) per value of selection coefficient to be estimated
+#NREPL=125 # this is the number of replicates (simulations) per value of selection coefficient to be estimated
+NREPL=10
 
 SELTIME=`bc <<< 'scale=4; 600/40000'` # 15kya
 
