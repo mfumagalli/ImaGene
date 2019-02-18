@@ -3,5 +3,7 @@
 model=$1
 repetition=$2
 
-ipython $RDS/ephemeral/produce_images.py $model $repetition
+$DIRSOFT=$RDS/home/Software
+
+ipython $DIRSOFT/ImaGene/HPC/produce_images.py $model $repetition
 

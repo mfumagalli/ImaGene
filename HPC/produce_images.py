@@ -14,6 +14,7 @@ from keras import models, layers, optimizers, regularizers
 from keras.utils import to_categorical, plot_model
 
 import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
 import pymc3
 import pydot
 
@@ -95,8 +96,8 @@ with open(dir_name + '/mypop_sortedrowscolsfreq','wb') as fp:
 
 with open(dir_name + '/mypop','rb') as fp:
     mypop = pickle.load(fp)
-mypop.sort('rows_distance_top')
-mypop.sort('cols_distance_top')
+mypop.sort('rows_dist')
+mypop.sort('cols_dist')
 mypop.resize((128, 128))
 mypop.convert()
 mypop.shuffle(shuffle_index)

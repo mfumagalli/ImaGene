@@ -495,7 +495,7 @@ class ImaNet:
         score = self.net.evaluate(self.gene.data[-nr_test:,:,:,:], y, batch_size=None)
         return score
 
-    def plot_scatter():
+    def plot_scatter(self):
         """
         Plot scatter plot (on testing set)
         """
@@ -516,7 +516,7 @@ class ImaNet:
 
         return 0
 
-    def plot_cm():
+    def plot_cm(self):
         """
         Plot confusion matrix (on testing set)
         """
