@@ -4,7 +4,7 @@
 #PBS -l select=1:ncpus=1:mem=64gb
 #PBS -J 0-29
 
-$DIRSOFT=$RDS/home/Software
+$IMAGENE=$HOME/Software/ImaGene
 
 EACH=10
 A=$(($PBS_ARRAY_INDEX / $EACH))
@@ -15,5 +15,5 @@ echo $model $repetition
 
 module load anaconda3/personal
 
-bash $DIRSOFT/ImaGene/HPC/produce_images.sh $model $repetition
+bash $IMAGENE/HPC/produce_images.sh $model $repetition
 
