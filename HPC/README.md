@@ -1,11 +1,14 @@
 
+Pipeline on HPC system.
+
+Perform simulations.
 ```
-cp $HOME/Software/ImaGene/HPC/generate_data_hpc.sh .
 qsub generate_data_hpc.sh
 ```
 
+Produce images.
 ```
-qsub produce_images.sh
+qsub produce_images_hpc.sh
 ```
 
 

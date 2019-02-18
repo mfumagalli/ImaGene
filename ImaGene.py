@@ -255,7 +255,7 @@ class ImaGene:
         Sort rows and/or columns given an ordering.
 
         Keyword Arguments:
-            ordering: either 'rows_freq', 'cols_freq', 'rows_distance_freq', 'cols_distance_freq'
+            ordering: either 'rows_freq', 'cols_freq', 'rows_dist', 'cols_dist'
 
         Returns:
             0
@@ -276,7 +276,7 @@ class ImaGene:
                     for z in range(counts[j]):
                         self.data[i][:,counter,:] = uniques[:,j,:]
                         counter -= 1
-        elif ordering == 'rows_distance_top':
+        elif ordering == 'rows_dist':
             for i in range(len(self.data)):
                 uniques, counts = np.unique(self.data[i], return_counts=True, axis=0)
                 # most frequent row in float
@@ -289,7 +289,7 @@ class ImaGene:
                     for z in range(counts[j]):
                         self.data[i][counter,:,:] = uniques[j,:,:]
                         counter += 1
-        elif ordering == 'cols_distance_top':
+        elif ordering == 'cols_dist':
             for i in range(len(self.data)):
                 uniques, counts = np.unique(self.data[i], return_counts=True, axis=1)
                 # most frequent column
@@ -346,6 +346,13 @@ class ImaGene:
         """
         Set classes
         """
+        # at each call reinitialise for safety
+        target = np.zeros(len(self.data), dtype='float32')
+        for i in range(len(self.data)):
+            # set target from file description
+            target[i] = self.description[i][self.parameter_name]
+        self.classes = np.unique(target)
+        del target
         # calculate new classes
         if nr_classes > 0:
             classes = np.linspace(self.target.min(), self.target.max(), nr_classes)
@@ -355,7 +362,7 @@ class ImaGene:
 
     def set_targets(self, wiggle=0, sd=0):
         """
-        Set target for binary or categorical classification.
+        Set target for binary or categorical classification (not for regression).
         """
         # at each call reinitialise
         self.target = np.zeros(len(self.data), dtype='float32')
@@ -368,21 +375,19 @@ class ImaGene:
         if len(self.classes) == 2:
             self.target = np.asarray(np.where(self.target==self.target.min(), 0, 1)).astype('float32')
         else:
-            if (sd > 0) or (wiggle > 0): 
-                # for multiclassification
+            # for multi classification
+            # add uncertainty
+            for i in range(len(self.target)):
+                self.target[i] = int(np.where(self.classes==self.target[i])[0]) + np.random.randint(low=-wiggle, high=wiggle+1)
+            self.target[np.where(self.target < 0)] = 0
+            self.target[np.where(self.target > (len(self.classes) - 1))] = len(self.classes) - 1
+            self.target = to_categorical(self.target, len(self.classes), dtype='float32')
+            # if distribution:
+            if sd > 0:
                 for i in range(len(self.target)):
-                    self.target[i] = int(np.where(self.classes==self.target[i])[0]) + np.random.randint(low=-wiggle, high=wiggle+1)
-                self.target[np.where(self.target < 0)] = 0
-                self.target[np.where(self.target > (len(self.classes) - 1))] = len(self.classes) - 1
-                self.target = to_categorical(self.target, len(self.classes), dtype='float32')
-                # if distribution:
-                if sd > 0:
-                    for i in range(len(self.target)):
-                        probs = scipy.stats.norm.pdf(range(len(self.classes)), loc=np.argmax(self.target[i]), scale=sd)
-                        self.target[i] = probs / probs.sum()
-                        del probs
-            else:
-                self.target = to_categorical(self.target, len(self.classes), dtype='float32')
+                    probs = scipy.stats.norm.pdf(range(len(self.classes)), loc=np.argmax(self.target[i]), scale=sd)
+                    self.target[i] = probs / probs.sum()
+                    del probs
         return 0
 
     def shuffle(self, index=[]):
@@ -479,7 +484,7 @@ class ImaNet:
 
     def test(self):
         """
-        Testing accuracy
+        Testing accuracy in classification
         """
         nr_train = int(self.gene.data.shape[0] * (1 - sum(self.notraining)))
         nr_test = int(self.gene.data.shape[0]) - nr_train
@@ -489,6 +494,59 @@ class ImaNet:
             y = self.gene.target[-nr_test:,:]
         score = self.net.evaluate(self.gene.data[-nr_test:,:,:,:], y, batch_size=None)
         return score
+
+    def plot_scatter():
+        """
+        Plot scatter plot (on testing set)
+        """
+        nr_train = int(self.gene.data.shape[0] * (1 - sum(self.notraining)))
+        nr_test = int(self.gene.data.shape[0]) - nr_train
+        if len(self.gene.target.shape) == 1:
+            pred = np.argmax(self.net.predict(self.gene[-nr_test:], batch_size=None), axis=1)
+            true = np.argmax(self.net.gene.target[-nr_test:], axis=1)
+        else:
+            y = self.gene.target[-nr_test:,:]
+            pred = np.argmax(self.net.predict(self.gene[-nr_test:,:], batch_size=None), axis=1)
+            true = np.argmax(self.net.gene.target[-nr_test:,:], axis=1)
+
+        plt.scatter(true, pred , marker='o')
+        plt.title('Relationship between true and predicted labels')
+        plt.xlabel('True label')
+        plt.ylabel('Predicted label')
+
+        return 0
+
+    def plot_cm():
+        """
+        Plot confusion matrix (on testing set)
+        """
+        nr_train = int(self.gene.data.shape[0] * (1 - sum(self.notraining)))
+        nr_test = int(self.gene.data.shape[0]) - nr_train
+        if len(self.gene.target.shape) == 1:
+            pred = np.argmax(self.net.predict(self.gene[-nr_test:], batch_size=None), axis=1)
+            true = np.argmax(self.net.gene.target[-nr_test:], axis=1)
+        else:
+            y = self.gene.target[-nr_test:,:]
+            pred = np.argmax(self.net.predict(self.gene[-nr_test:,:], batch_size=None), axis=1)
+            true = np.argmax(self.net.gene.target[-nr_test:,:], axis=1)
+
+        cm = confusion_matrix(true, pred)
+
+        fig = plt.figure(facecolor='white')
+        title = 'Normalized confusion matrix'
+        cmap = plt.cm.Blues
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+        plt.imshow(cm, interpolation='nearest', cmap=cmap)
+        plt.title(title)
+        plt.colorbar()
+        tick_marks = np.arange(len(self.net.gene.classes))
+        plt.xticks(tick_marks, self.net.gene.classes, rotation=90, fontsize=8)
+        plt.yticks(tick_marks, self.net.gene.classes, fontsize=8)
+        plt.tight_layout()
+        plt.ylabel('True label')
+        plt.xlabel('Predicted label')
+
+        return 0
 
     def predict(self, gene, visualise=True, verbose=1):
         """

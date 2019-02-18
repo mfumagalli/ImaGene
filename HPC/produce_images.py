@@ -27,8 +27,8 @@ import sys
 
 # 
 
-model = sys.argv[1]
-repetition = sys.argv[2]
+model = str(sys.argv[1])
+repetition = str(sys.argv[2])
 
 # load ImaGene
 
@@ -36,7 +36,7 @@ get_ipython().run_line_magic('run', '-i /rds/general/user/mfumagal/home/Software
 
 # load file
 
-dir_sim = '/rds/general/user/mfumagal/ephemeral/Data/ImaGene/Simulations' + repetition + '.Epoch', + model
+dir_sim = '/rds/general/user/mfumagal/ephemeral/Data/ImaGene/Simulations' + repetition + '.Epoch' + model
 
 myfile = ImaFile(simulations_folder=dir_sim, nr_samples=128, model_name=model)
 
@@ -52,7 +52,7 @@ mypop.filter_freq(0.01)
 
 shuffle_index = np.random.permutation(len(mypop.data))
 
-dir_name = '/rds/general/user/mfumagal/ephemeral/Data/ImaGene/Images' + repetition + '.Epoch', + model
+dir_name = '/rds/general/user/mfumagal/ephemeral/Data/ImaGene/Images' + repetition + '.Epoch' + model
 if os.path.exists(dir_name) is False:
     os.mkdir(dir_name)
 
