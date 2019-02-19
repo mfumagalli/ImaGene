@@ -39,9 +39,9 @@ fi
 
 # Then you need to define parameters on the genomic locus to estimate. These parameters are the length (in bp), mutation and recombination rate. You should need to specify how many samples (e.g. haplotypes) you wish to extract from the simulations. Be aware that mutation and recombination rates are scaled in 4*Ne*length, and therefore you need to use the sample NREF specified in the step above.
 
-LEN=100000 # length of the locus in bp
-THETA=60 # mutation rate in 4*Ne*LEN scale; 60 corresponds to 1.5e-8 for Ne=10,000 and 100,000 bp length
-RHO=40 # recombination rate (rho); 40 corresponds to 1e-8 for Ne=10,000 and 100,000 bp length
+LEN=80000 # length of the locus in bp
+THETA=48 # mutation rate in 4*Ne*LEN scale; 60 corresponds to 1.5e-8 for Ne=10,000 and 100,000 bp length
+RHO=32 # recombination rate (rho); 40 corresponds to 1e-8 for Ne=10,000 and 100,000 bp length
 
 NCHROMS=128 # number of haplotypes (chromosomes) to extract: 198 matches the number of  unrelated CEU samples in 1000 Genomes Project data
 
@@ -51,12 +51,11 @@ NCHROMS=128 # number of haplotypes (chromosomes) to extract: 198 matches the num
 
 SELPOS=`bc <<< 'scale=2; 1/2'` # relative position of selected allele; the example here indicates that the selected allele sits in the middle of the locus
 
-FREQ=`bc <<< 'scale=6; 1/20000'` # frequency of selected allele at start of selection; here de novo, 1/2N
+FREQ=`bc <<< 'scale=6; 1/200'` # frequency of selected allele at start of selection; here 0.005
 
-SELRANGE=`seq 0 1 799` # range and step for the selection coefficient to be estimated in 2*Ne units;
+SELRANGE=`seq 0 1 800` # range and step for the selection coefficient to be estimated in 2*Ne units;
 
-#NREPL=125 # this is the number of replicates (simulations) per value of selection coefficient to be estimated
-NREPL=10
+NREPL=125 # this is the number of replicates (simulations) per value of selection coefficient to be estimated
 
 SELTIME=`bc <<< 'scale=4; 600/40000'` # 15kya
 
