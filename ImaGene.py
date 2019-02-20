@@ -1,4 +1,6 @@
 
+### ------------- utilities --------------------
+
 def extract_msms_parameter(line, option, position=0):
     """
     Extract simulation parameters from first line of msms file
@@ -13,6 +15,48 @@ def extract_msms_parameter(line, option, position=0):
     """
 
     return line.partition(option)[2].split()[position]
+
+def get_index_classes(targets, classes):
+    """
+    Get index array for targets corresponding to selectec classes
+
+    Keyword Arguments:
+        targets (array) -- target feature in ImaGene object
+        classes (array) -- classes to select from targets
+
+    Return:
+        index (array)
+    """
+    index = []
+    for counter,value in enumerate(classes):
+        index = np.concatenate([index, np.where(targets==value)[0]])
+    return np.asarray(index, dtype='int')
+
+def get_index_random(genes=[], length=0):
+    """
+    Get random index array
+
+    Keyword Arguments:
+        length (int) -- length random index array
+        genes (object) -- ImaGene object
+
+    Return:
+        index (array)
+    """
+    if length == 0:
+        length = len(genes.data)
+    if length == 0:
+        print('Either length or genes must be provided.')
+    return np.random.permutation(length)
+
+def calculate_allele_frequency(genes, position):
+    """
+    ...
+    """
+    return [np.where(genes.data[i][:,np.where(genes.positions[i]==position)[0][0],0]==255,1,0).sum() for i in range(len(genes.data))]
+
+
+### -------- objects ------------------
 
 class ImaFile:
     """
@@ -140,20 +184,20 @@ class ImaGene:
     """
     A batch of genomic images
     """
-    def __init__(self, data, positions, description, target=[], parameter_name=None, classes=[]):
+    def __init__(self, data, positions, description, targets=[], parameter_name=None, classes=[]):
         self.data = data
         self.positions = positions
         self.description = description
         self.dimensions = (np.zeros(len(self.data)), np.zeros(len(self.data)))
         self.parameter_name = parameter_name # this is passed by ImaFile.read_simulations()
-        self.target = np.zeros(len(self.data), dtype='float32')
+        self.targets = np.zeros(len(self.data), dtype='float32')
         for i in range(len(self.data)):
-            # set target from file description
-            self.target[i] = self.description[i][self.parameter_name]
+            # set targets from file description
+            self.targets[i] = self.description[i][self.parameter_name]
             # assign dimensions
             self.dimensions[0][i] = self.data[i].shape[0]
             self.dimensions[1][i] = self.data[i].shape[1]
-        self.classes = np.unique(self.target)
+        self.classes = np.unique(self.targets)
         return None
 
     def summary(self):
@@ -339,7 +383,7 @@ class ImaGene:
             print('Flipping values.')
             for i in range(len(self.data)):
                 self.data[i] = 1. - self.data[i]
-        print('A numpy array with dimensions', self.data.shape, 'and target with length', len(self.target), 'and', len(self.classes), 'classes.')
+        print('A numpy array with dimensions', self.data.shape, 'and', len(self.targets), 'targets and', len(self.classes), 'classes.')
         return 0
 
     def set_classes(self, classes=[], nr_classes=0):
@@ -347,70 +391,70 @@ class ImaGene:
         Set classes (or reinitiate)
         """
         # at each call reinitialise for safety
-        target = np.zeros(len(self.data), dtype='float32')
+        targets = np.zeros(len(self.data), dtype='float32')
         for i in range(len(self.data)):
             # set target from file description
-            target[i] = self.description[i][self.parameter_name]
-        self.classes = np.unique(target)
+            targets[i] = self.description[i][self.parameter_name]
+        self.classes = np.unique(targets)
         # calculate and/or assign new classes
         if nr_classes > 0:
-            self.classes = np.linspace(target.min(), target.max(), nr_classes)
+            self.classes = np.linspace(targets.min(), targets.max(), nr_classes)
         elif len(classes)>0:
             self.classes = classes
-        del target
+        del targets
         return 0
 
     def set_targets(self, wiggle=0, sd=0):
         """
-        Set target for binary or categorical classification (not for regression) AFTER running set_classes
+        Set targets for binary or categorical classification (not for regression) AFTER running set_classes
         """
         # at each call reinitialise
-        self.target = np.zeros(len(self.data), dtype='float32')
+        self.targets = np.zeros(len(self.data), dtype='float32')
         # assign labels as closest class
-        for i in range(len(self.target)):
+        for i in range(len(self.targets)):
             # reinitialise
-            self.target[i] = self.description[i][self.parameter_name]
-            self.target[i] = self.classes[np.argsort(np.abs(self.target[i] - self.classes))[0]]
+            self.targets[i] = self.description[i][self.parameter_name]
+            self.targets[i] = self.classes[np.argsort(np.abs(self.targets[i] - self.classes))[0]]
         # for binary classification
         if len(self.classes) == 2:
-            self.target = np.asarray(np.where(self.target==self.classes.min(), 0, 1)).astype('float32')
+            self.targets = np.asarray(np.where(self.targets==self.classes.min(), 0, 1)).astype('float32')
         else:
             # for multi classification
             # classes and targets should be integers
             classes_as_int = np.asarray(self.classes).astype('int')
-            self.target = np.asarray(self.target).astype('int')
+            self.targets = np.asarray(self.targets).astype('int')
             # add uncertainty
-            for i in range(len(self.target)):
-                self.target[i] = int(np.where(classes_as_int==self.target[i])[0]) + np.random.randint(low=-wiggle, high=wiggle+1)
-            self.target[np.where(self.target < 0)] = 0
-            self.target[np.where(self.target > (len(self.classes) - 1))] = len(self.classes) - 1
-            self.target = to_categorical(self.target, len(self.classes), dtype='int')
+            for i in range(len(self.targets)):
+                self.targets[i] = int(np.where(classes_as_int==self.targets[i])[0]) + np.random.randint(low=-wiggle, high=wiggle+1)
+            self.targets[np.where(self.targets < 0)] = 0
+            self.targets[np.where(self.targets > (len(self.classes) - 1))] = len(self.classes) - 1
+            #self.targets = to_categorical(self.targets, len(self.classes), dtype='int')
             del classes_as_int
-            # if distribution:
-            if sd > 0:
-                # then targets are float
-                targets_as_float = np.zeros(shape=(len(self.target), len(self.classes)))
-                for i in range(len(self.target)):
-                    probs = scipy.stats.norm.pdf(range(len(self.classes)), loc=np.argmax(self.target[i]), scale=sd)
-                    targets_as_float[i,] = probs / probs.sum()
-                    del probs
-                self.target = targets_as_float
-                del targets_as_float
+            # if distribution: PUT THIS AS A SEPARATE FUNCTION SO I CAN REMOVE to_categorical from here!!!
+            #if sd > 0:
+            #    # then targets are float
+            #    targets_as_float = np.zeros(shape=(len(self.targets), len(self.classes)))
+            #    for i in range(len(self.targets)):
+            #        probs = scipy.stats.norm.pdf(range(len(self.classes)), loc=np.argmax(self.targets[i]), scale=sd)
+            #        targets_as_float[i,] = probs / probs.sum()
+            #        del probs
+            #    self.targets = targets_as_float
+            #    del targets_as_float
         return 0
 
-    def shuffle(self, index=[]):
+    def subset(self, index):
         """
-        Shuffle images and targets randomly
+        Subset object to index array (for shuffling or only for multiclassification after setting classes and targets)
         """
-        if len(index) != len(self.data):
-            index = np.random.permutation(len(self.data))
-        self.target = self.target[index]
-        for counter, value in enumerate(index):
-            self.data[counter] = self.data[value,:,:,:]
+        # update based on index
+        self.targets = self.targets[index]
+        self.data = self.data[index]
         self.positions = [self.positions[i] for i in index]
         self.description = [self.description[i] for i in index]
+        for i in range(len(self.data)):
+            self.dimensions[0][i] = self.data[i].shape[0]
+            self.dimensions[1][i] = self.data[i].shape[1]
         return 0
-
 
 class ImaNet:
     """
@@ -441,10 +485,10 @@ class ImaNet:
         """
         nr_train = int(self.gene.data.shape[0] * (1 - self.notraining[0]))
         nr_test = int(self.gene.data.shape[0]) - nr_train
-        if len(self.gene.target.shape) == 1:
-            y = self.gene.target[:nr_train]
+        if len(self.gene.targets.shape) == 1:
+            y = self.gene.targets[:nr_train]
         else:
-            y = self.gene.target[:nr_train,:]
+            y = self.gene.targets[:nr_train,:]
         self.history = self.net.fit(self.gene.data[:nr_train,:,:,:], y, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_split=self.notraining[1])
         self.net.save('net.h5')
         print('Saved as net.h5')
@@ -496,10 +540,10 @@ class ImaNet:
         """
         nr_train = int(self.gene.data.shape[0] * (1 - sum(self.notraining)))
         nr_test = int(self.gene.data.shape[0]) - nr_train
-        if len(self.gene.target.shape) == 1:
-            y = self.gene.target[-nr_test:]
+        if len(self.gene.targets.shape) == 1:
+            y = self.gene.targets[-nr_test:]
         else:
-            y = self.gene.target[-nr_test:,:]
+            y = self.gene.targets[-nr_test:,:]
         score = self.net.evaluate(self.gene.data[-nr_test:,:,:,:], y, batch_size=None)
         return score
 
@@ -509,13 +553,13 @@ class ImaNet:
         """
         nr_train = int(self.gene.data.shape[0] * (1 - sum(self.notraining)))
         nr_test = int(self.gene.data.shape[0]) - nr_train
-        if len(self.gene.target.shape) == 1:
-            pred = np.argmax(self.net.predict(self.gene[-nr_test:], batch_size=None), axis=1)
-            true = np.argmax(self.net.gene.target[-nr_test:], axis=1)
+        if len(self.gene.targets.shape) == 1:
+            pred = np.argmax(self.net.predict(self.gene.data[-nr_test:], batch_size=None), axis=1).reshape(-1,-1)
+            true = self.gene.targets[-nr_test:]
         else:
-            y = self.gene.target[-nr_test:,:]
-            pred = np.argmax(self.net.predict(self.gene[-nr_test:,:], batch_size=None), axis=1)
-            true = np.argmax(self.net.gene.target[-nr_test:,:], axis=1)
+            y = self.gene.targets[-nr_test:,:]
+            pred = np.argmax(self.net.predict(self.gene.data[-nr_test:,:], batch_size=None), axis=1)
+            true = np.argmax(self.gene.targets[-nr_test:,:], axis=1)
 
         plt.scatter(true, pred , marker='o')
         plt.title('Relationship between true and predicted labels')
@@ -530,13 +574,13 @@ class ImaNet:
         """
         nr_train = int(self.gene.data.shape[0] * (1 - sum(self.notraining)))
         nr_test = int(self.gene.data.shape[0]) - nr_train
-        if len(self.gene.target.shape) == 1:
-            pred = np.argmax(self.net.predict(self.gene[-nr_test:], batch_size=None), axis=1)
-            true = np.argmax(self.net.gene.target[-nr_test:], axis=1)
+        if len(self.gene.targets.shape) == 1:
+            pred = np.argmax(self.net.predict(self.gene.data[-nr_test:], batch_size=None), axis=1).reshape(1,-1)
+            true = self.gene.targets[-nr_test:]
         else:
-            y = self.gene.target[-nr_test:,:]
+            y = self.gene.targets[-nr_test:,:]
             pred = np.argmax(self.net.predict(self.gene[-nr_test:,:], batch_size=None), axis=1)
-            true = np.argmax(self.net.gene.target[-nr_test:,:], axis=1)
+            true = np.argmax(self.gene.targets[-nr_test:,:], axis=1)
 
         cm = confusion_matrix(true, pred)
 
@@ -547,9 +591,9 @@ class ImaNet:
         plt.imshow(cm, interpolation='nearest', cmap=cmap)
         plt.title(title)
         plt.colorbar()
-        tick_marks = np.arange(len(self.net.gene.classes))
-        plt.xticks(tick_marks, self.net.gene.classes, rotation=90, fontsize=8)
-        plt.yticks(tick_marks, self.net.gene.classes, fontsize=8)
+        tick_marks = np.arange(len(self.gene.classes))
+        plt.xticks(tick_marks, self.gene.classes, rotation=90, fontsize=8)
+        plt.yticks(tick_marks, self.gene.classes, fontsize=8)
         plt.tight_layout()
         plt.ylabel('True label')
         plt.xlabel('Predicted label')
