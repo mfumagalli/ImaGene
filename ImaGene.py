@@ -344,7 +344,7 @@ class ImaGene:
 
     def set_classes(self, classes=[], nr_classes=0):
         """
-        Set classes
+        Set classes (or reinitiate)
         """
         # at each call reinitialise for safety
         target = np.zeros(len(self.data), dtype='float32')
@@ -352,17 +352,17 @@ class ImaGene:
             # set target from file description
             target[i] = self.description[i][self.parameter_name]
         self.classes = np.unique(target)
-        del target
-        # calculate new classes
+        # calculate and/or assign new classes
         if nr_classes > 0:
-            classes = np.linspace(self.target.min(), self.target.max(), nr_classes)
-        # assign new classes
-        self.classes = classes
+            self.classes = np.linspace(target.min(), target.max(), nr_classes)
+        elif len(classes)>0:
+            self.classes = classes
+        del target
         return 0
 
     def set_targets(self, wiggle=0, sd=0):
         """
-        Set target for binary or categorical classification (not for regression).
+        Set target for binary or categorical classification (not for regression) AFTER running set_classes
         """
         # at each call reinitialise
         self.target = np.zeros(len(self.data), dtype='float32')
@@ -373,21 +373,29 @@ class ImaGene:
             self.target[i] = self.classes[np.argsort(np.abs(self.target[i] - self.classes))[0]]
         # for binary classification
         if len(self.classes) == 2:
-            self.target = np.asarray(np.where(self.target==self.target.min(), 0, 1)).astype('float32')
+            self.target = np.asarray(np.where(self.target==self.classes.min(), 0, 1)).astype('float32')
         else:
             # for multi classification
+            # classes and targets should be integers
+            classes_as_int = np.asarray(self.classes).astype('int')
+            self.target = np.asarray(self.target).astype('int')
             # add uncertainty
             for i in range(len(self.target)):
-                self.target[i] = int(np.where(self.classes==self.target[i])[0]) + np.random.randint(low=-wiggle, high=wiggle+1)
+                self.target[i] = int(np.where(classes_as_int==self.target[i])[0]) + np.random.randint(low=-wiggle, high=wiggle+1)
             self.target[np.where(self.target < 0)] = 0
             self.target[np.where(self.target > (len(self.classes) - 1))] = len(self.classes) - 1
-            self.target = to_categorical(self.target, len(self.classes), dtype='float32')
+            self.target = to_categorical(self.target, len(self.classes), dtype='int')
+            del classes_as_int
             # if distribution:
             if sd > 0:
+                # then targets are float
+                targets_as_float = np.zeros(shape=(len(self.target), len(self.classes)))
                 for i in range(len(self.target)):
                     probs = scipy.stats.norm.pdf(range(len(self.classes)), loc=np.argmax(self.target[i]), scale=sd)
-                    self.target[i] = probs / probs.sum()
+                    targets_as_float[i,] = probs / probs.sum()
                     del probs
+                self.target = targets_as_float
+                del targets_as_float
         return 0
 
     def shuffle(self, index=[]):
