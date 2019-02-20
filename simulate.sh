@@ -43,7 +43,7 @@ LEN=80000 # length of the locus in bp
 THETA=48 # mutation rate in 4*Ne*LEN scale; 60 corresponds to 1.5e-8 for Ne=10,000 and 100,000 bp length
 RHO=32 # recombination rate (rho); 40 corresponds to 1e-8 for Ne=10,000 and 100,000 bp length
 
-NCHROMS=100 # number of haplotypes (chromosomes) to extract: 198 matches the number of  unrelated CEU samples in 1000 Genomes Project data
+NCHROMS=128 # number of haplotypes (chromosomes) to extract: 198 matches the number of  unrelated CEU samples in 1000 Genomes Project data
 
 ## 3) SELECTION
 

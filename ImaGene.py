@@ -270,12 +270,12 @@ class ImaGene:
                         counter += 1
         elif ordering == 'cols_freq':
             for i in range(len(self.data)):
-                counter = self.data[i].shape[1] - 1
                 uniques, counts = np.unique(self.data[i], return_counts=True, axis=1)
+                counter = 0 #
                 for j in counts.argsort()[::-1]:
                     for z in range(counts[j]):
                         self.data[i][:,counter,:] = uniques[:,j,:]
-                        counter -= 1
+                        counter += 1
         elif ordering == 'rows_dist':
             for i in range(len(self.data)):
                 uniques, counts = np.unique(self.data[i], return_counts=True, axis=0)
@@ -296,12 +296,12 @@ class ImaGene:
                 top = uniques[:,counts.argsort()[::-1][0]].astype('float32')
                 # distances from most frequent column
                 distances = np.mean(np.abs(uniques[:,:,0] - top), axis=0)
-                # fill in from right to left
-                counter = self.data[i].shape[1] - 1
+                # fill in from left to right
+                counter = 0
                 for j in distances.argsort():
                     for z in range(counts[j]):
                         self.data[i][:,counter,:] = uniques[:,j,:]
-                        counter -= 1
+                        counter += 1
         else:
             print('Select a valid ordering.')
             return 1
