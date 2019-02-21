@@ -372,28 +372,32 @@ class ImaGene:
             return 1
         return 0
 
-    def convert(self, normalise=False, flip=True):
+    def convert(self, normalise=False, flip=True, verbose=False):
         """
         Check for correct data type and convert otherwise. Convert to float numpy arrays [0,1] too. If flip true, then flips 0-1
         """
         # if list, put is as numpy array
         if type(self.data) == list:
             if len(np.unique(self.dimensions[0]))*len(np.unique(self.dimensions[1])) == 1:
-               print('Converting to numpy array.')
-               self.data = np.asarray(self.data)
+                if verbose:
+                    print('Converting to numpy array.')
+                self.data = np.asarray(self.data)
             else:
                 print('Aborted. All images must have the same shape.')
                 return 1
         # if unit8, put it as float and divide by 255
         if self.data.dtype == 'uint8':
-            print('Converting to float32.')
+            if verbose:
+                print('Converting to float32.')
             self.data = self.data.astype('float32')
         if self.data.max() > 1:
-            print('Converting to [0,1].')
+            if verbose:
+                print('Converting to [0,1].')
             self.data /= 255.
         # normalise
         if normalise==True:
-            print('Normalising samplewise.')
+            if verbose:
+                print('Normalising samplewise.')
             for i in range(len(self.data)):
                 mean = self.data[i].mean()
                 std = self.data[i].std()
@@ -401,10 +405,12 @@ class ImaGene:
                 self.data[i] /= std
         # flip
         if flip==True:
-            print('Flipping values.')
+            if verbose:
+                print('Flipping values.')
             for i in range(len(self.data)):
                 self.data[i] = 1. - self.data[i]
-        print('A numpy array with dimensions', self.data.shape, 'and', len(self.targets), 'targets and', len(self.classes), 'classes.')
+        if verbose:
+            print('A numpy array with dimensions', self.data.shape, 'and', len(self.targets), 'targets and', len(self.classes), 'classes.')
         return 0
 
     def set_classes(self, classes=[], nr_classes=0):
@@ -436,16 +442,6 @@ class ImaGene:
             self.targets[i] = self.description[i][self.parameter_name]
             # assign label as closest class
             self.targets[i] = self.classes[np.argsort(np.abs(self.targets[i] - self.classes))[0]]
-            # if distribution: PUT THIS AS A SEPARATE FUNCTION SO I CAN REMOVE to_categorical from here!!!
-            #if sd > 0:
-            #    # then targets are float
-            #    targets_as_float = np.zeros(shape=(len(self.targets), len(self.classes)))
-            #    for i in range(len(self.targets)):
-            #        probs = scipy.stats.norm.pdf(range(len(self.classes)), loc=np.argmax(self.targets[i]), scale=sd)
-            #        targets_as_float[i,] = probs / probs.sum()
-            #        del probs
-            #    self.targets = targets_as_float
-            #    del targets_as_float
         return 0
 
     def subset(self, index):
@@ -466,105 +462,80 @@ class ImaNet:
     """
     Training and Learning
     """
-    def __init__(self, notraining=(0.20, 0.20), model_name=None, model=None, history=None):
-        self.notraining = notraining # (test, validation)
-        self.model_name = model_name
-        self.net = model
-        self.history = None
-        self.input_shape = (int(self.gene.dimensions[0][0]), int(self.gene.dimensions[1][0]), self.gene.data.shape[3])
-        self.output_shape = len(self.gene.classes)
+    def __init__(self, name=None, model=None):
+        self.name = name
+        self.model = model
+        self.scores = {'val_loss': [], 'val_acc': [], 'loss': [], 'acc': [], 'val_mse': [], 'val_mae:': [], 'mse': [], 'mae': []}
+        self.test = np.zeros(2)
         return None
 
-    def plot_net(self):
+    def plot_net(self, screen=False):
         """
         Visualise network
         """
-        self.model.summary()
+        if screen:
+            self.model.summary()
         plot_model(self.model, to_file='net.png')
         print('Written as net.png')
         return 0
 
-    def train(self, verbose=1, epochs=10, batch_size=32):
+    def update_scores(self, score):
         """
-        Train network [DEPRECATED!!!]
+        Append new scores after each training
         """
-        nr_train = int(self.gene.data.shape[0] * (1 - self.notraining[0]))
-        nr_test = int(self.gene.data.shape[0]) - nr_train
-        if len(self.gene.targets.shape) == 1:
-            y = self.gene.targets[:nr_train]
+        if self.model.metrics_names == ['loss', 'acc']:
+            metrics = ['val_loss', 'val_acc', 'loss', 'acc']
         else:
-            y = self.gene.targets[:nr_train,:]
-        self.history = self.net.fit(self.gene.data[:nr_train,:,:,:], y, batch_size=batch_size, epochs=epochs, verbose=verbose, validation_split=self.notraining[1])
-        self.net.save('net.h5')
-        print('Saved as net.h5')
-        return 0
+            metrics = ['val_mse', 'val_mae', 'mse', 'mae']
+        for i in metrics:
+            self.scores[i].append(score.history[i])
 
     def plot_train(self):
         """
         Plot training accuracy/mae and loss
         """
-        loss = self.history.history['loss']
-        val_loss = self.history.history['val_loss']
+        if self.model.metrics_names == ['loss', 'acc']:
+            loss = self.scores['loss']
+            val_loss = self.scores['val_loss']
+            acc = self.scores['acc']
+            val_acc = self.scores['val_acc']
+        else:
+            loss = self.scores['mse']
+            val_loss = self.scores['val_mse']
+            acc = self.scores['mae']
+            val_acc = self.scores['val_mae']
         epochs = range(1, len(loss) + 1)
 
         plt.figure()
 
         plt.subplot(211)
 
-        plt.plot(epochs, loss, 'bo', label='Training loss')
-        plt.plot(epochs, val_loss, 'b', label='Validation loss')
-        plt.title('Training and validation loss')
+        plt.plot(epochs, loss, 'bo', label='Training loss/mse')
+        plt.plot(epochs, val_loss, 'b', label='Validation loss/mse')
+        plt.title('Training and validation loss/mse')
         plt.legend()
 
         plt.subplot(212)
 
-        if 'acc' in self.history.history:
-            acc = self.history.history['acc']
-            val_acc = self.history.history['val_acc']
-            plt.plot(epochs, acc, 'bo', label='Training acc')
-            plt.plot(epochs, val_acc, 'b', label='Validation acc')
-            plt.title('Training and validation accuracy')
-            plt.legend()
-        elif 'mae' in self.history.history:
-            mae = self.history.history['mae']
-            val_mae = self.history.history['val_mae']
-            plt.plot(epochs, mae, 'bo', label='Training mae')
-            plt.plot(epochs, val_mae, 'b', label='Validation mae')
-            plt.title('Training and validation mean absolute error')
-            plt.legend()
-        else:
-            pass
+        plt.plot(epochs, acc, 'bo', label='Training acc/mae')
+        plt.plot(epochs, val_acc, 'b', label='Validation acc/mae')
+        plt.title('Training and validation accuracy/mae')
+        plt.legend()
 
         plt.show()
 
         return 0
 
-    def test(self):
-        """
-        Testing accuracy in classification [DEPRECATED]
-        """
-        nr_train = int(self.gene.data.shape[0] * (1 - sum(self.notraining)))
-        nr_test = int(self.gene.data.shape[0]) - nr_train
-        if len(self.gene.targets.shape) == 1:
-            y = self.gene.targets[-nr_test:]
-        else:
-            y = self.gene.targets[-nr_test:,:]
-        score = self.net.evaluate(self.gene.data[-nr_test:,:,:,:], y, batch_size=None)
-        return score
-
-    def plot_scatter(self):
+    def plot_scatter(self, gene):
         """
         Plot scatter plot (on testing set)
         """
-        nr_train = int(self.gene.data.shape[0] * (1 - sum(self.notraining)))
-        nr_test = int(self.gene.data.shape[0]) - nr_train
-        if len(self.gene.targets.shape) == 1:
-            pred = np.argmax(self.net.predict(self.gene.data[-nr_test:], batch_size=None), axis=1).reshape(-1,-1)
-            true = self.gene.targets[-nr_test:]
+        if len(gene.targets.shape) == 1:
+            pred = np.where(self.model.predict(gene.data, batch_size=None)[:,0] < 0.5, 0., 1.)
+            true = gene.targets
         else:
-            y = self.gene.targets[-nr_test:,:]
-            pred = np.argmax(self.net.predict(self.gene.data[-nr_test:,:], batch_size=None), axis=1)
-            true = np.argmax(self.gene.targets[-nr_test:,:], axis=1)
+            pred = np.argmax(self.model.predict(gene.data, batch_size=None), axis=1)
+            true = np.argmax(gene.targets, axis=1)
 
         plt.scatter(true, pred , marker='o')
         plt.title('Relationship between true and predicted labels')
@@ -573,19 +544,16 @@ class ImaNet:
 
         return 0
 
-    def plot_cm(self):
+    def plot_cm(self, gene):
         """
         Plot confusion matrix (on testing set)
         """
-        nr_train = int(self.gene.data.shape[0] * (1 - sum(self.notraining)))
-        nr_test = int(self.gene.data.shape[0]) - nr_train
-        if len(self.gene.targets.shape) == 1:
-            pred = np.argmax(self.net.predict(self.gene.data[-nr_test:], batch_size=None), axis=1).reshape(1,-1)
-            true = self.gene.targets[-nr_test:]
+        if len(gene.targets.shape) == 1:
+            pred = np.where(self.model.predict(gene.data, batch_size=None)[:,0] < 0.5, 0., 1.)
+            true = gene.targets
         else:
-            y = self.gene.targets[-nr_test:,:]
-            pred = np.argmax(self.net.predict(self.gene[-nr_test:,:], batch_size=None), axis=1)
-            true = np.argmax(self.gene.targets[-nr_test:,:], axis=1)
+            pred = np.argmax(self.model.predict(gene.data, batch_size=None), axis=1)
+            true = np.argmax(gene.targets, axis=1)
 
         cm = confusion_matrix(true, pred)
 
@@ -596,9 +564,9 @@ class ImaNet:
         plt.imshow(cm, interpolation='nearest', cmap=cmap)
         plt.title(title)
         plt.colorbar()
-        tick_marks = np.arange(len(self.gene.classes))
-        plt.xticks(tick_marks, self.gene.classes, rotation=90, fontsize=8)
-        plt.yticks(tick_marks, self.gene.classes, fontsize=8)
+        tick_marks = np.arange(len(gene.classes))
+        plt.xticks(tick_marks, gene.classes, rotation=90, fontsize=8)
+        plt.yticks(tick_marks, gene.classes, fontsize=8)
         plt.tight_layout()
         plt.ylabel('True label')
         plt.xlabel('Predicted label')
