@@ -1,7 +1,7 @@
 
 ### Configuration for simulations 
 
-# bash script.sh msms.lib folder model
+# bash script.sh msms.lib folder model mode
 
 ### ---------------------------------------------------------------
 
@@ -53,9 +53,15 @@ SELPOS=`bc <<< 'scale=2; 1/2'` # relative position of selected allele; the examp
 
 FREQ=`bc <<< 'scale=6; 1/100'` # frequency of selected allele at start of selection; here 0.01
 
-SELRANGE=`seq 0 1 400` # range and step for the selection coefficient to be estimated in 2*Ne units;
+if [ $4 == binary ]; then 
+    SELRANGE=`seq 0 100 400` # range and step for the selection coefficient to be estimated in 2*Ne units;
+    NREPL=20000 # (20k) this is the number of replicates (simulations) per value of selection coefficient to be estimated; 
+fi
 
-NREPL=250 # this is the number of replicates (simulations) per value of selection coefficient to be estimated
+if [ $4 == multi ]; then 
+    SELRANGE=`seq 0 1 400` # range and step for the selection coefficient to be estimated in 2*Ne units;
+    NREPL=250 # (250) this is the number of replicates (simulations) per value of selection coefficient to be estimated; 
+fi
 
 SELTIME=`bc <<< 'scale=4; 600/40000'` # 15kya
 

@@ -18,7 +18,7 @@ def extract_msms_parameter(line, option, position=0):
 
 def get_index_classes(targets, classes):
     """
-    Get index array for targets corresponding to selectec classes
+    Get index array for targets corresponding to selected classes
 
     Keyword Arguments:
         targets (array) -- target feature in ImaGene object
@@ -54,6 +54,27 @@ def calculate_allele_frequency(genes, position):
     ...
     """
     return [np.where(genes.data[i][:,np.where(genes.positions[i]==position)[0][0],0]==255,1,0).sum() for i in range(len(genes.data))]
+
+def to_binary(targets):
+    return np.asarray(np.where(targets == targets.min(), 0, 1).astype('float32'))
+
+def to_categorical(targets, wiggle=0, sd=0):
+    nr_classes = len(np.unique(targets))
+    results = np.zeros((len(targets), nr_classes), dtype='float32')
+    for counter, value in enumerate(targets):
+        # add wiggle (if any)
+        if wiggle > 0:
+            value += np.random.randint(low=-wiggle, high=wiggle+1)
+            if value < 0:
+                value = 0
+            elif value >= results.shape[1]:
+                value = results.shape[1] - 1
+        results[counter, value] = 1.
+        # add sd (if any)
+        probs = scipy.stats.norm.pdf(range(nr_classes), loc=value, scale=sd)
+        results[counter, ] = probs / probs.sum()
+        del probs
+    return results
 
 
 ### -------- objects ------------------
@@ -96,9 +117,9 @@ class ImaFile:
         desc.update({'selection_start_time':float(extract_msms_parameter(first_line, '-SI '))})
         desc.update({'selection_start_frequency':float(extract_msms_parameter(first_line, '-SI ', 2))})
     
-        desc.update({'selection_coeff_HOMO':float(extract_msms_parameter(first_line, '-SAA '))})
-        desc.update({'selection_coeff_hetero':float(extract_msms_parameter(first_line, '-SAa '))})
-        desc.update({'selection_coeff_homo':float(extract_msms_parameter(first_line, '-Saa '))})
+        desc.update({'selection_coeff_HOMO':int(extract_msms_parameter(first_line, '-SAA '))})
+        desc.update({'selection_coeff_hetero':int(extract_msms_parameter(first_line, '-SAa '))})
+        desc.update({'selection_coeff_homo':int(extract_msms_parameter(first_line, '-Saa '))})
 
         desc.update({'model':str(self.model_name)})
 
@@ -190,7 +211,7 @@ class ImaGene:
         self.description = description
         self.dimensions = (np.zeros(len(self.data)), np.zeros(len(self.data)))
         self.parameter_name = parameter_name # this is passed by ImaFile.read_simulations()
-        self.targets = np.zeros(len(self.data), dtype='float32')
+        self.targets = np.zeros(len(self.data), dtype='int32')
         for i in range(len(self.data)):
             # set targets from file description
             self.targets[i] = self.description[i][self.parameter_name]
@@ -391,14 +412,14 @@ class ImaGene:
         Set classes (or reinitiate)
         """
         # at each call reinitialise for safety
-        targets = np.zeros(len(self.data), dtype='float32')
+        targets = np.zeros(len(self.data), dtype='int32')
         for i in range(len(self.data)):
             # set target from file description
             targets[i] = self.description[i][self.parameter_name]
         self.classes = np.unique(targets)
         # calculate and/or assign new classes
         if nr_classes > 0:
-            self.classes = np.linspace(targets.min(), targets.max(), nr_classes)
+            self.classes = np.asarray(np.linspace(targets.min(), targets.max(), nr_classes), dtype='int32')
         elif len(classes)>0:
             self.classes = classes
         del targets
@@ -408,28 +429,13 @@ class ImaGene:
         """
         Set targets for binary or categorical classification (not for regression) AFTER running set_classes
         """
-        # at each call reinitialise
-        self.targets = np.zeros(len(self.data), dtype='float32')
-        # assign labels as closest class
+        # initialise
+        self.targets = np.zeros(len(self.data), dtype='int32')
         for i in range(len(self.targets)):
             # reinitialise
             self.targets[i] = self.description[i][self.parameter_name]
+            # assign label as closest class
             self.targets[i] = self.classes[np.argsort(np.abs(self.targets[i] - self.classes))[0]]
-        # for binary classification
-        if len(self.classes) == 2:
-            self.targets = np.asarray(np.where(self.targets==self.classes.min(), 0, 1)).astype('float32')
-        else:
-            # for multi classification
-            # classes and targets should be integers
-            classes_as_int = np.asarray(self.classes).astype('int')
-            self.targets = np.asarray(self.targets).astype('int')
-            # add uncertainty
-            for i in range(len(self.targets)):
-                self.targets[i] = int(np.where(classes_as_int==self.targets[i])[0]) + np.random.randint(low=-wiggle, high=wiggle+1)
-            self.targets[np.where(self.targets < 0)] = 0
-            self.targets[np.where(self.targets > (len(self.classes) - 1))] = len(self.classes) - 1
-            #self.targets = to_categorical(self.targets, len(self.classes), dtype='int')
-            del classes_as_int
             # if distribution: PUT THIS AS A SEPARATE FUNCTION SO I CAN REMOVE to_categorical from here!!!
             #if sd > 0:
             #    # then targets are float
@@ -460,11 +466,10 @@ class ImaNet:
     """
     Training and Learning
     """
-    def __init__(self, gene, notraining=(0.20, 0.20), net_name=None, net=None, history=None):
-        self.gene = gene
+    def __init__(self, notraining=(0.20, 0.20), model_name=None, model=None, history=None):
         self.notraining = notraining # (test, validation)
-        self.net_name = net_name
-        self.net = net
+        self.model_name = model_name
+        self.net = model
         self.history = None
         self.input_shape = (int(self.gene.dimensions[0][0]), int(self.gene.dimensions[1][0]), self.gene.data.shape[3])
         self.output_shape = len(self.gene.classes)
@@ -472,16 +477,16 @@ class ImaNet:
 
     def plot_net(self):
         """
-        Visualise net
+        Visualise network
         """
-        self.net.summary()
-        plot_model(self.net, to_file='net.png')
+        self.model.summary()
+        plot_model(self.model, to_file='net.png')
         print('Written as net.png')
         return 0
 
     def train(self, verbose=1, epochs=10, batch_size=32):
         """
-        Train network
+        Train network [DEPRECATED!!!]
         """
         nr_train = int(self.gene.data.shape[0] * (1 - self.notraining[0]))
         nr_test = int(self.gene.data.shape[0]) - nr_train
@@ -536,7 +541,7 @@ class ImaNet:
 
     def test(self):
         """
-        Testing accuracy in classification
+        Testing accuracy in classification [DEPRECATED]
         """
         nr_train = int(self.gene.data.shape[0] * (1 - sum(self.notraining)))
         nr_test = int(self.gene.data.shape[0]) - nr_train
