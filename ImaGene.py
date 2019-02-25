@@ -469,14 +469,14 @@ class ImaNet:
         self.test = np.zeros(2)
         return None
 
-    def plot_net(self, screen=False):
+    def plot_net(self, summary=False, file='net.png'):
         """
         Visualise network
         """
-        if screen:
+        if summary:
             self.model.summary()
-        plot_model(self.model, to_file='net.png')
-        print('Written as net.png')
+        plot_model(self.model, to_file=file)
+        print('Written as' + file)
         return 0
 
     def update_scores(self, score):
