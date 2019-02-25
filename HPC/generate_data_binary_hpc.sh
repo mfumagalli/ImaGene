@@ -9,7 +9,7 @@ date
 MODE=binary # or 'multi'
 
 DIRSOFT=/home/mfumagal/Software
-DIRDATA=$EPHEMERAL/Data/ImaGene.$MODE
+DIRDATA=$EPHEMERAL/Data/ImaGene/$MODE
 
 EACH=10
 A=$(($PBS_ARRAY_INDEX / $EACH))

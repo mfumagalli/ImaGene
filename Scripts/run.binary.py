@@ -11,17 +11,18 @@ from keras.utils import plot_model
 from keras.models import load_model
 
 import matplotlib.pyplot as plt
-#from sklearn.metrics import confusion_matrix
-#import pymc3 # this will be removed
+from sklearn.metrics import confusion_matrix
+import pymc3 # this will be removed
 import pydot # optional
 
 import pathlib
 import _pickle as pickle
 
-exec(open('ImaGene.py').read())
-#get_ipython().run_line_magic('run', '-i /home/mfumagal/Software/ImaGene/ImaGene.py')
+from keras import backend as K
 
-for s in [100, 200, 300, 400]:
+exec(open('ImaGene.py').read())
+
+for s in [200, 300, 400]:
 
     for m in ['None', 'Rows', 'Cols', 'RowsCols']:
 
@@ -39,7 +40,7 @@ for s in [100, 200, 300, 400]:
 
                 myfile = ImaFile(simulations_folder='/home/mfumagal/Data/ImaGene/Binary/Simulations' + str(i) 
                          + '.Epoch' + str(e), nr_samples=128, model_name='Marth-' + str(e) + 'epoch-CEU')
-                mypop = myfile.read_simulations(parameter_name='selection_coeff_hetero', max_nrepl=20)
+                mypop = myfile.read_simulations(parameter_name='selection_coeff_hetero', max_nrepl=2000)
     
                 mypop.majorminor()
                 mypop.filter_freq(0.01)
@@ -65,7 +66,7 @@ for s in [100, 200, 300, 400]:
                 mypop.targets = to_binary(mypop.targets)
     
                 if i == 1:
-                    mynet = ImaNet(name='CPx2')
+                    mynet = ImaNet(name='[C32+P]x2+D64')
                     mynet.model = models.Sequential([
                         layers.Conv2D(filters=32, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.01, l2=0.01), padding='valid', input_shape=mypop.data.shape[1:4]),
                         layers.MaxPooling2D(pool_size=(2,2)),
@@ -73,8 +74,8 @@ for s in [100, 200, 300, 400]:
                         layers.Conv2D(filters=32, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.01, l2=0.01), padding='valid'),
                         layers.MaxPooling2D(pool_size=(2,2)),
                         #layers.Dropout(rate=0.5),
-                        #layers.Conv2D(filters=32, kernel_size=(3,3), strides=(1,1), activation='relu', padding='valid'),
-                        #layers.MaxPooling2D(pool_size=(2,2)),
+                        layers.Conv2D(filters=32, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.01, l2=0.01), padding='valid'),
+                        layers.MaxPooling2D(pool_size=(2,2)),
                         #layers.Dropout(rate=0.5),
                         layers.Flatten(),
                         layers.Dense(units=64, activation='relu'),
@@ -104,8 +105,6 @@ for s in [100, 200, 300, 400]:
             del mypop
             del mynet
 
-
-
-
+            K.clear_session()
 
 
