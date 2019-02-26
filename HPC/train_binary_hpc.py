@@ -20,7 +20,7 @@ import _pickle as pickle
 
 from keras import backend as K
 
-exec(open('ImaGene.py').read())
+exec(open('/rds/general/user/mfumagal/home/Software/ImaGene/ImaGene.py').read())
 
 for s in [200, 300, 400]:
 
@@ -28,7 +28,7 @@ for s in [200, 300, 400]:
 
         for e in [1, 2, 3]:
 
-            folder = '/home/mfumagal/Data/ImaGene/Binary/Results/Epoch' + str(e) + '/S' + str(s) + '/' + str(m)
+            folder = '/rds/general/user/mfumagal/ephemeral/Data/ImaGene/Binary/Results/Epoch' + str(e) + '/S' + str(s) + '/' + str(m)
             print(folder)
             pathlib.Path(folder).mkdir(parents=True, exist_ok=True) 
                        
@@ -38,9 +38,8 @@ for s in [200, 300, 400]:
                 i += 1
                 print(str(s) + str(m) + str(e) + str(i))
 
-                myfile = ImaFile(simulations_folder='/home/mfumagal/Data/ImaGene/Binary/Simulations' + str(i) 
-                         + '.Epoch' + str(e), nr_samples=128, model_name='Marth-' + str(e) + 'epoch-CEU')
-                mypop = myfile.read_simulations(parameter_name='selection_coeff_hetero', max_nrepl=2000)
+                myfile = ImaFile(simulations_folder='/rds/general/user/mfumagal/ephemeral/Data/ImaGene/binary/Simulations' + str(i) + '.Epoch' + str(e), nr_samples=128, model_name='Marth-' + str(e) + 'epoch-CEU')
+                mypop = myfile.read_simulations(parameter_name='selection_coeff_hetero', max_nrepl=20000)
     
                 mypop.majorminor()
                 mypop.filter_freq(0.01)
@@ -66,19 +65,19 @@ for s in [200, 300, 400]:
                 mypop.targets = to_binary(mypop.targets)
     
                 if i == 1:
-                    mynet = ImaNet(name='[C32+P]x2+D64')
+                    mynet = ImaNet(name='[C32+P]+[C64+P]x2+D128')
                     mynet.model = models.Sequential([
                         layers.Conv2D(filters=32, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.01, l2=0.01), padding='valid', input_shape=mypop.data.shape[1:4]),
                         layers.MaxPooling2D(pool_size=(2,2)),
                         #layers.Dropout(rate=0.5),
-                        layers.Conv2D(filters=32, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.01, l2=0.01), padding='valid'),
+                        layers.Conv2D(filters=64, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.01, l2=0.01), padding='valid'),
                         layers.MaxPooling2D(pool_size=(2,2)),
                         #layers.Dropout(rate=0.5),
-                        layers.Conv2D(filters=32, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.01, l2=0.01), padding='valid'),
+                        layers.Conv2D(filters=64, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.01, l2=0.01), padding='valid'),
                         layers.MaxPooling2D(pool_size=(2,2)),
                         #layers.Dropout(rate=0.5),
                         layers.Flatten(),
-                        layers.Dense(units=64, activation='relu'),
+                        layers.Dense(units=128, activation='relu'),
                         layers.Dense(units=1, activation='sigmoid')])
                     mynet.model.compile(optimizer='rmsprop',
                         loss='binary_crossentropy',
