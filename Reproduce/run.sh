@@ -13,5 +13,13 @@ do
 done
 
 
+bash generata_data.sh Multi
+
+for e in 3 2 1
+do
+    python train_multi.py $e > Logs/multi.$e.txt
+done
+
+
 
 

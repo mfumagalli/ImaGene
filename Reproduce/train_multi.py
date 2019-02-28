@@ -1,5 +1,7 @@
 
-# reproduce multi analysis
+# reproduce multi analysis, effect of demographic model
+
+# train on 3 different models, test on 3-epoch
 
 import os
 import gzip
@@ -17,7 +19,7 @@ from keras import backend as K
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 import pymc3 # this will be removed
-import pydot # optional
+import pydot
 
 exec(open('/home/mfumagal/Software/ImaGene/ImaGene.py').read())
 
@@ -29,17 +31,20 @@ import sys
 
 e = str(sys.argv[1]) # epoch
 m = 'RowsCols' 
-s = str(sys.argv[3]) # sel coeff
 
-folder = '/home/mfumagal/Data/ImaGene/Multi/Results/Epoch' + str(e) + '/S' + str(s) + '/' + str(m)
+folder = '/home/mfumagal/Data/ImaGene/Multi/Results/Epoch' + str(e)
 print(folder)
 pathlib.Path(folder).mkdir(parents=True, exist_ok=True)
 
 i = 1
 while i <= 10:
 
-    myfile = ImaFile(simulations_folder='/home/mfumagal/Data/ImaGene/Binary/Simulations' + str(i) + '.Epoch' + str(e), nr_samples=128, model_name='Marth-' + str(e) + 'epoch-CEU')
-    mygene = myfile.read_simulations(parameter_name='selection_coeff_hetero', max_nrepl=2000)
+    if i < 10:
+        myfile = ImaFile(simulations_folder='/home/mfumagal/Data/ImaGene/Binary/Simulations' + str(i) + '.Epoch' + str(e), nr_samples=128, model_name='Marth-' + str(e) + 'epoch-CEU')
+    else:
+        # take 3-epoch
+        myfile = ImaFile(simulations_folder='/home/mfumagal/Data/ImaGene/Binary/Simulations' + str(i) + '.Epoch' + str(3), nr_samples=128, model_name='Marth-' + str(3) + 'epoch-CEU')
+    mygene = myfile.read_simulations(parameter_name='selection_coeff_hetero', max_nrepl=5000)
 
     mygene.majorminor()
     mygene.filter_freq(0.01)
@@ -50,8 +55,6 @@ while i <= 10:
     mygene.resize((128, 128))
     mygene.convert()
 
-    mygene.classes = np.array([0,int(s)])
-    mygene.subset(get_index_classes(mygene.targets, mygene.classes))
     mygene.subset(get_index_random(mygene))
 
     mygene.targets = to_binary(mygene.targets)
@@ -62,19 +65,19 @@ while i <= 10:
         model = models.Sequential([
                     layers.Conv2D(filters=32, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.005, l2=0.005), padding='valid', input_shape=mygene.data.shape[1:4]),
                     layers.MaxPooling2D(pool_size=(2,2)),
-                    layers.Conv2D(filters=32, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.005, l2=0.005), padding='valid'),
+                    layers.Conv2D(filters=64, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.005, l2=0.005), padding='valid'),
                     layers.MaxPooling2D(pool_size=(2,2)),
-                    layers.Conv2D(filters=32, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.005, l2=0.005), padding='valid'),
+                    layers.Conv2D(filters=64, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.005, l2=0.005), padding='valid'),
                     layers.MaxPooling2D(pool_size=(2,2)),
-                    layers.Flatten(),
-                    layers.Dense(units=64, activation='relu'),
-                    layers.Dense(units=1, activation='sigmoid')])
-        model.compile(optimizer='rmsprop',
-                    loss='binary_crossentropy',
+                    #layers.Flatten(),
+                    #layers.Dense(units=64, activation='relu'),
+                    layers.Dense(units=len(mygene.classes), activation='softmax')])
+        model.compile(optimizer='adam',
+                    loss='categorical_crossentropy',
                     metrics=['accuracy'])
         plot_model(model, folder + '/model.png')
 
-        mynet = ImaNet(name='[C32+P]x3+D64')
+        mynet = ImaNet(name='[C32+P]+[C64+P]x2')
 
     # training
     if i < 10:
