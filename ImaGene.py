@@ -86,9 +86,17 @@ def load_imagene(file):
     """
     Load ImaGene object
     """
-    with open(file,'rb') as fp:
+    with open(file, 'rb') as fp:
         gene = pickle.load(fp)
     return gene
+
+def load_imanet(file):
+    """
+    Load ImaNet object
+    """
+    with open(file, 'rb') as fp:
+        net = pickle.load(fp)
+    return net
 
 
 ### -------- objects ------------------
@@ -487,7 +495,7 @@ class ImaNet:
     """
     def __init__(self, name=None, model=None):
         self.name = name
-        self.scores = {'val_loss/mse': [], 'val_acc/mae': [], 'loss/mse': [], 'acc/mae': []}
+        self.scores = {'val_loss': [], 'val_acc': [], 'loss': [], 'acc': [], 'val_mse': [], 'val_mae': [], 'mse': [], 'mae': []}
         self.test = np.zeros(2)
         self.values = None # matrix(3,nr_test) true, map, mle
         return None
@@ -496,18 +504,25 @@ class ImaNet:
         """
         Append new scores after each training
         """
-        metrics = ['val_loss/mse', 'val_acc/mae', 'loss/mse', 'acc/mae']
-        for i in metrics:
-            self.scores[i].append(score.history[i])
+        for key in self.scores.keys():
+            if key in score.history:
+                self.scores[key].append(score.history[key])
+        return 0
 
     def plot_train(self):
         """
         Plot training accuracy/mae and loss/mse
         """
-        loss = self.scores['loss/mse']
-        val_loss = self.scores['val_loss/mse']
-        acc = self.scores['acc/mae']
-        val_acc = self.scores['val_acc/mae']
+        if 'loss' in self.scores.keys():
+            loss = self.scores['loss']
+            val_loss = self.scores['val_loss']
+            acc = self.scores['acc']
+            val_acc = self.scores['val_acc']
+        else:
+            loss = self.scores['mse']
+            val_loss = self.scores['val_mse']
+            acc = self.scores['mae']
+            val_acc = self.scores['val_mae']
         epochs = range(1, len(loss) + 1)
 
         plt.figure()
@@ -530,11 +545,11 @@ class ImaNet:
 
         return 0
 
-    def predict(self, data, model):
+    def predict(self, gene, model):
         """
         Calculate predicted values (many, I assume this is for testing not for single prediction)
         """
-        self.values = np.zeros(3, gene.data.shape[0])
+        self.values = np.zeros((3, gene.data.shape[0]), dtype='float32')
         if len(gene.targets.shape) == 1:
             self.values[1,:] = np.where(model.predict(gene.data, batch_size=None)[:,0] < 0.5, 0., 1.)
             self.values[0,:] = gene.targets
@@ -554,7 +569,7 @@ class ImaNet:
 
         return 0
 
-    def plot_cm(self):
+    def plot_cm(self, classes):
         """
         Plot confusion matrix (on testing set)
         """
@@ -567,9 +582,9 @@ class ImaNet:
         plt.imshow(cm, interpolation='nearest', cmap=cmap)
         plt.title(title)
         plt.colorbar()
-        tick_marks = np.arange(len(gene.classes))
-        plt.xticks(tick_marks, gene.classes, rotation=90, fontsize=8)
-        plt.yticks(tick_marks, gene.classes, fontsize=8)
+        tick_marks = np.arange(len(classes))
+        plt.xticks(tick_marks, classes, rotation=90, fontsize=8)
+        plt.yticks(tick_marks, classes, fontsize=8)
         plt.tight_layout()
         plt.ylabel('True label')
         plt.xlabel('Predicted label')

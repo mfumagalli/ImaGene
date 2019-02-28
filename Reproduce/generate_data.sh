@@ -2,10 +2,10 @@
 
 date
 
-MODE=binary # or 'multi'
+MODE=$1 # Binary or Multi
 
 DIRSOFT=/home/mfumagal/Software
-DIRDATA=/home/mfumagal/Data/ImaGene.$MODE
+DIRDATA=/home/mfumagal/Data/ImaGene/$MODE
 
 EACH=10
 for PBS_ARRAY_INDEX in {0..29}
@@ -17,7 +17,7 @@ do
 	FNAME=$DIRDATA/Simulations$repetition.Epoch$model
 	echo $FNAME
 	mkdir -p $FNAME
-	bash $DIRSOFT/ImaGene/simulate.sh $DIRSOFT/msms/lib/msms.jar $FNAME $model $MODE
+	bash $DIRSOFT/ImaGene/Reproduce/simulate.sh $DIRSOFT/msms/lib/msms.jar $FNAME $model $MODE
 done
 
 date
