@@ -586,7 +586,14 @@ class ImaNet:
         """
         Predict new gene
         """
-        probs = self.net.predict(gene)
+        probs = self.model.predict(gene.data, batch_size=None)
+        if len(gene.targets.shape) == 1:
+            probs = [:,0]
+            MAP = np.where(probs < 0.5, 0., 1.)
+            MLE = np.average(gene.classes, weights = probs[0])
+        #else:
+            
+
         MAP = self.gene.classes[np.argmax(probs)]
         MLE = np.average(self.gene.classes, weights = probs[0])
         BF = (1 - probs[0][0]) / probs[0][0]
