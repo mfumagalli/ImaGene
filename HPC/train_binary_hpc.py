@@ -20,13 +20,16 @@ import _pickle as pickle
 
 from keras import backend as K
 
+import sys
+epoch = str(sys.argv[1])
+
 exec(open('/rds/general/user/mfumagal/home/Software/ImaGene/ImaGene.py').read())
 
-for s in [200, 300, 400]:
+for s in [300, 400]:
 
-    for m in ['None', 'Rows', 'Cols', 'RowsCols']:
+    for m in ['Rows', 'Cols', 'RowsCols', 'None']:
 
-        for e in [1, 2, 3]:
+        for e in [int(epoch)]:
 
             folder = '/rds/general/user/mfumagal/ephemeral/Data/ImaGene/Binary/Results/Epoch' + str(e) + '/S' + str(s) + '/' + str(m)
             print(folder)
@@ -65,19 +68,19 @@ for s in [200, 300, 400]:
                 mypop.targets = to_binary(mypop.targets)
     
                 if i == 1:
-                    mynet = ImaNet(name='[C32+P]+[C64+P]x2+D128')
+                    mynet = ImaNet(name='[C32+P]x3+D64')
                     mynet.model = models.Sequential([
-                        layers.Conv2D(filters=32, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.01, l2=0.01), padding='valid', input_shape=mypop.data.shape[1:4]),
+                        layers.Conv2D(filters=32, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.005, l2=0.005), padding='valid', input_shape=mypop.data.shape[1:4]),
                         layers.MaxPooling2D(pool_size=(2,2)),
                         #layers.Dropout(rate=0.5),
-                        layers.Conv2D(filters=64, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.01, l2=0.01), padding='valid'),
+                        layers.Conv2D(filters=32, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.005, l2=0.005), padding='valid'),
                         layers.MaxPooling2D(pool_size=(2,2)),
                         #layers.Dropout(rate=0.5),
-                        layers.Conv2D(filters=64, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.01, l2=0.01), padding='valid'),
+                        layers.Conv2D(filters=32, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.005, l2=0.005), padding='valid'),
                         layers.MaxPooling2D(pool_size=(2,2)),
                         #layers.Dropout(rate=0.5),
                         layers.Flatten(),
-                        layers.Dense(units=128, activation='relu'),
+                        layers.Dense(units=64, activation='relu'),
                         layers.Dense(units=1, activation='sigmoid')])
                     mynet.model.compile(optimizer='rmsprop',
                         loss='binary_crossentropy',
@@ -95,11 +98,9 @@ for s in [200, 300, 400]:
                     print(mynet.test)
 
             # save the latest data (testing data)
-            with open(folder + '/mypop','wb') as fp:
-                pickle.dump(mypop, fp)
-            # save the latest network
-            with open(folder + '/mynet','wb') as fp:
-                pickle.dump(mynet, fp)
+            mypop.save(file=folder + '/mypop')
+            # save the latest network (but not the model which should be loaded using load_model)
+            mynet.save(file=folder + '/mynet')
         
             del mypop
             del mynet

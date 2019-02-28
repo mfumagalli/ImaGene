@@ -458,6 +458,15 @@ class ImaGene:
             self.dimensions[1][i] = self.data[i].shape[1]
         return 0
 
+    def save(self, file):
+        """
+        Save to file
+        """
+        with open(file, 'wb') as fp:
+            pickle.dump(self, fp)
+        return 0
+
+
 class ImaNet:
     """
     Training and Learning
@@ -607,5 +616,15 @@ class ImaNet:
             #plt.legend() 
             plt.show() 
         return (probs, (MAP, MLE, BF, HPD))
+
+    def save(self, file):
+        """
+        Save to file
+        """
+        with open(file,'wb') as fp:
+            pickle.dump(self, fp)
+
+        return 0
+
 
 
