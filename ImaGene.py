@@ -1,6 +1,7 @@
 
 ### ------------- utilities --------------------
 
+
 def extract_msms_parameter(line, option, position=0):
     """
     Extract simulation parameters from first line of msms file
@@ -15,6 +16,7 @@ def extract_msms_parameter(line, option, position=0):
     """
 
     return line.partition(option)[2].split()[position]
+
 
 def get_index_classes(targets, classes):
     """
@@ -31,6 +33,7 @@ def get_index_classes(targets, classes):
     for counter,value in enumerate(classes):
         index = np.concatenate([index, np.where(targets==value)[0]])
     return np.asarray(index, dtype='int')
+
 
 def get_index_random(genes=[], length=0):
     """
@@ -49,14 +52,17 @@ def get_index_random(genes=[], length=0):
         print('Either length or genes must be provided.')
     return np.random.permutation(length)
 
+
 def calculate_allele_frequency(genes, position):
     """
     ...
     """
     return [np.where(genes.data[i][:,np.where(genes.positions[i]==position)[0][0],0]==255,1,0).sum() for i in range(len(genes.data))]
 
+
 def to_binary(targets):
     return np.asarray(np.where(targets == targets.min(), 0, 1).astype('float32'))
+
 
 def to_categorical(targets, wiggle=0, sd=0):
     nr_classes = len(np.unique(targets))
@@ -75,6 +81,14 @@ def to_categorical(targets, wiggle=0, sd=0):
         results[counter, ] = probs / probs.sum()
         del probs
     return results
+
+def load_imagene(file):
+    """
+    Load ImaGene object
+    """
+    with open(file,'rb') as fp:
+        gene = pickle.load(fp)
+    return gene
 
 
 ### -------- objects ------------------
@@ -473,46 +487,27 @@ class ImaNet:
     """
     def __init__(self, name=None, model=None):
         self.name = name
-        self.model = model
-        self.scores = {'val_loss': [], 'val_acc': [], 'loss': [], 'acc': [], 'val_mse': [], 'val_mae:': [], 'mse': [], 'mae': []}
+        self.scores = {'val_loss/mse': [], 'val_acc/mae': [], 'loss/mse': [], 'acc/mae': []}
         self.test = np.zeros(2)
+        self.values = None # matrix(3,nr_test) true, map, mle
         return None
-
-    def plot_net(self, summary=False, file='net.png'):
-        """
-        Visualise network
-        """
-        if summary:
-            self.model.summary()
-        plot_model(self.model, to_file=file)
-        print('Written as' + file)
-        return 0
 
     def update_scores(self, score):
         """
         Append new scores after each training
         """
-        if self.model.metrics_names == ['loss', 'acc']:
-            metrics = ['val_loss', 'val_acc', 'loss', 'acc']
-        else:
-            metrics = ['val_mse', 'val_mae', 'mse', 'mae']
+        metrics = ['val_loss/mse', 'val_acc/mae', 'loss/mse', 'acc/mae']
         for i in metrics:
             self.scores[i].append(score.history[i])
 
     def plot_train(self):
         """
-        Plot training accuracy/mae and loss
+        Plot training accuracy/mae and loss/mse
         """
-        if self.model.metrics_names == ['loss', 'acc']:
-            loss = self.scores['loss']
-            val_loss = self.scores['val_loss']
-            acc = self.scores['acc']
-            val_acc = self.scores['val_acc']
-        else:
-            loss = self.scores['mse']
-            val_loss = self.scores['val_mse']
-            acc = self.scores['mae']
-            val_acc = self.scores['val_mae']
+        loss = self.scores['loss/mse']
+        val_loss = self.scores['val_loss/mse']
+        acc = self.scores['acc/mae']
+        val_acc = self.scores['val_acc/mae']
         epochs = range(1, len(loss) + 1)
 
         plt.figure()
@@ -535,36 +530,35 @@ class ImaNet:
 
         return 0
 
-    def plot_scatter(self, gene):
+    def predict(self, data, model):
+        """
+        Calculate predicted values (many, I assume this is for testing not for single prediction)
+        """
+        self.values = np.zeros(3, gene.data.shape[0])
+        if len(gene.targets.shape) == 1:
+            self.values[1,:] = np.where(model.predict(gene.data, batch_size=None)[:,0] < 0.5, 0., 1.)
+            self.values[0,:] = gene.targets
+        else:
+            self.values[1,:] = np.argmax(model.predict(gene.data, batch_size=None), axis=1)
+            self.values[0,:] = np.argmax(gene.targets, axis=1)
+        return 0
+
+    def plot_scatter(self):
         """
         Plot scatter plot (on testing set)
         """
-        if len(gene.targets.shape) == 1:
-            pred = np.where(self.model.predict(gene.data, batch_size=None)[:,0] < 0.5, 0., 1.)
-            true = gene.targets
-        else:
-            pred = np.argmax(self.model.predict(gene.data, batch_size=None), axis=1)
-            true = np.argmax(gene.targets, axis=1)
-
-        plt.scatter(true, pred , marker='o')
+        plt.scatter(self.values[0,:], self.values[1,:], marker='o')
         plt.title('Relationship between true and predicted labels')
         plt.xlabel('True label')
         plt.ylabel('Predicted label')
 
         return 0
 
-    def plot_cm(self, gene):
+    def plot_cm(self):
         """
         Plot confusion matrix (on testing set)
         """
-        if len(gene.targets.shape) == 1:
-            pred = np.where(self.model.predict(gene.data, batch_size=None)[:,0] < 0.5, 0., 1.)
-            true = gene.targets
-        else:
-            pred = np.argmax(self.model.predict(gene.data, batch_size=None), axis=1)
-            true = np.argmax(gene.targets, axis=1)
-
-        cm = confusion_matrix(true, pred)
+        cm = confusion_matrix(self.values[0,:], self.values[1,:])
 
         fig = plt.figure(facecolor='white')
         title = 'Normalized confusion matrix'
@@ -581,48 +575,6 @@ class ImaNet:
         plt.xlabel('Predicted label')
 
         return 0
-
-    def predict(self, gene, visualise=True, verbose=1):
-        """
-        Predict new gene
-        """
-        probs = self.model.predict(gene.data, batch_size=None)
-        if len(gene.targets.shape) == 1:
-            probs = [:,0]
-            MAP = np.where(probs < 0.5, 0., 1.)
-            MLE = np.average(gene.classes, weights = probs[0])
-        #else:
-            
-
-        MAP = self.gene.classes[np.argmax(probs)]
-        MLE = np.average(self.gene.classes, weights = probs[0])
-        BF = (1 - probs[0][0]) / probs[0][0]
-        samples_distr = np.random.choice(self.gene.classes, size = 100000, replace = True, p = probs[0]) 
-        HPD = pymc3.stats.hpd(samples_distr, alpha = 0.05)
-        if verbose > 0:
-            print('MLE (', str(round(MLE,2)), ')')
-            print('MAP (', str(MAP), ')')
-            print('BF (', str(round(BF,2)), ')')
-            print('HPD (', str(HPD), ')')
-
-        if visualise == True:
-            plt.figure()
-            tick_marks = self.gene.classes
-            cen_tick = self.gene.classes
-            plt.hist(samples_distr, color='#a6bddb', bins=len(self.gene.classes), density=True) 
-            #plt.axvline(MLE, label='MLE ('+str(round(MLE,1))+')', color='r', linestyle='--') 
-            #plt.axvline(MAP, label='MAP ('+str(MAP)+')', color='g', linestyle='--') 
-            plt.xlim([self.gene.classes.min(), self.gene.classes.max()]) 
-            #plt.axhline(y=0.0001, xmin=HPD[0]/self.gene.labels.max(), xmax=HPD[1]/self.gene.labels.max(), c='black', label='95% HPD\nInterval: [{}, {}]'.format(HPD[0],HPD[1])) 
-            plt.xticks(cen_tick, cen_tick, rotation=45, fontsize=10) 
-            plt.yticks(fontsize=10) 
-            plt.ylabel('Probability', fontsize=12) 
-            plt.xlabel('Parameter', fontsize=12) 
-            plt.title('Sampled posterior distribution') 
-            plt.grid(True) 
-            #plt.legend() 
-            plt.show() 
-        return (probs, (MAP, MLE, BF, HPD))
 
     def save(self, file):
         """
