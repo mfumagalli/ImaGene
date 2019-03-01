@@ -1,5 +1,5 @@
 
-# reproduce binary analysis
+# reproduce binary additional analysis (no dense layer, (5,5) filter)
 
 import os
 import gzip
@@ -12,7 +12,6 @@ import skimage.transform
 from keras import models, layers, activations, optimizers, regularizers
 from keras.utils import plot_model
 from keras.models import load_model
-from keras import backend as K
 
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
@@ -25,13 +24,11 @@ import pathlib
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
-import sys
+e = 3
+m = 'RowsCols'
+s = 300
 
-e = str(sys.argv[1]) # epoch
-m = str(sys.argv[2]) # sorting
-s = str(sys.argv[3]) # sel coeff
-
-folder = '/home/mfumagal/Data/ImaGene/Binary/Results/Epoch' + str(e) + '/S' + str(s) + '/' + str(m)
+folder = '/home/mfumagal/Data/ImaGene/Binary/Results/NoDense/Epoch' + str(e) + '/S' + str(s) + '/' + str(m)
 print(folder)
 pathlib.Path(folder).mkdir(parents=True, exist_ok=True)
 
@@ -66,15 +63,13 @@ while i <= 10:
                     layers.MaxPooling2D(pool_size=(2,2)),
                     layers.Conv2D(filters=32, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.005, l2=0.005), padding='valid'),
                     layers.MaxPooling2D(pool_size=(2,2)),
-                    layers.Flatten(),
-                    layers.Dense(units=64, activation='relu'),
                     layers.Dense(units=1, activation='sigmoid')])
         model.compile(optimizer='rmsprop',
                     loss='binary_crossentropy',
                     metrics=['accuracy'])
         plot_model(model, folder + '/model.png')
 
-        mynet = ImaNet(name='[C32+P]x3+D64')
+        mynet = ImaNet(name='[C32+P]x3')
 
     # training
     if i < 10:
@@ -96,5 +91,5 @@ mygene.save(folder + '/mygene')
 # save final network
 mynet.save(folder + '/mynet')
 
-
+print(mynet.test)
 

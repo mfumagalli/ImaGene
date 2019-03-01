@@ -14,7 +14,6 @@ import skimage.transform
 from keras import models, layers, activations, optimizers, regularizers
 from keras.utils import plot_model
 from keras.models import load_model
-from keras import backend as K
 
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix

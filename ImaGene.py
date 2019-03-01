@@ -509,7 +509,7 @@ class ImaNet:
                 self.scores[key].append(score.history[key])
         return 0
 
-    def plot_train(self):
+    def plot_train(self, file=None):
         """
         Plot training accuracy/mae and loss/mse
         """
@@ -541,7 +541,10 @@ class ImaNet:
         plt.title('Training and validation accuracy/mae')
         plt.legend()
 
-        plt.show()
+        if file==None:
+            plt.show()
+        else:
+            plt.savefig(file)
 
         return 0
 
@@ -558,7 +561,7 @@ class ImaNet:
             self.values[0,:] = np.argmax(gene.targets, axis=1)
         return 0
 
-    def plot_scatter(self):
+    def plot_scatter(self, file=None):
         """
         Plot scatter plot (on testing set)
         """
@@ -566,29 +569,44 @@ class ImaNet:
         plt.title('Relationship between true and predicted labels')
         plt.xlabel('True label')
         plt.ylabel('Predicted label')
-
+        if file==None:
+            plt.show()
+        else:
+            plt.savefig(file)
         return 0
 
-    def plot_cm(self, classes):
+    def plot_cm(self, classes, file=None):
         """
         Plot confusion matrix (on testing set)
         """
         cm = confusion_matrix(self.values[0,:], self.values[1,:])
-
-        fig = plt.figure(facecolor='white')
-        title = 'Normalized confusion matrix'
-        cmap = plt.cm.Blues
+        accuracy = np.trace(cm) / float(np.sum(cm))
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+
+        fig = plt.figure()
         plt.imshow(cm, interpolation='nearest', cmap=cmap)
         plt.title(title)
         plt.colorbar()
+        title = 'Confusion matrix'
+        cmap = plt.cm.Blues
+
         tick_marks = np.arange(len(classes))
-        plt.xticks(tick_marks, classes, rotation=90, fontsize=8)
+        plt.xticks(tick_marks, classes, fontsize=8)
         plt.yticks(tick_marks, classes, fontsize=8)
+
+        thresh = cm.max() / 1.5
+        for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+            plt.text(j, i, "{:0.4f}".format(cm[i, j]), horizontalalignment="center", color="white" if cm[i, j] > thresh else "black")
+
         plt.tight_layout()
         plt.ylabel('True label')
-        plt.xlabel('Predicted label')
+        plt.xlabel('Predicted label\naccuracy={:0.4f}'.format(accuracy))
+        plt.show()
 
+        if (file==None):
+            plt.show()
+        else:
+            plt.savefig(file)
         return 0
 
     def save(self, file):
