@@ -1,4 +1,8 @@
 
+### --------------------------------- ###
+
+# plot confusion matrices for binary classification
+
 import numpy as np
 import _pickle as pickle
 
@@ -49,5 +53,11 @@ for e in [3]:
                 ax[r,c].text(j, i, "{:0.3f}".format(cm[i, j]), horizontalalignment="center", color="white" if cm[i, j] > thresh else "black")
 
 fig.show()
+
+### --------------------------------- ###
+
+
+
+
 
 

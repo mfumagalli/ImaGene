@@ -456,7 +456,7 @@ class ImaGene:
         del targets
         return 0
 
-    def set_targets(self, wiggle=0, sd=0):
+    def set_targets(self):
         """
         Set targets for binary or categorical classification (not for regression) AFTER running set_classes
         """
