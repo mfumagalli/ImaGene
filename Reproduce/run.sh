@@ -16,13 +16,9 @@ done
 
 python analyse_binary.py
 
-python train_binary_nodense.py
+python train_binary_nodense.py > ~/Data/ImaGene/Logs/binary_nodense.txt
 
-python train_binary_5x5filter.py
-
-
-
-bash generata_data.sh Multi
+python train_binary_5x5filter.py > ~/Data/ImaGene/Logs/binary_5x5filter.txt
 
 for e in 3 2 1
 do

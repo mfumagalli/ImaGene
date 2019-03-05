@@ -41,7 +41,7 @@ while i <= 10:
     if i < 10:
         myfile = ImaFile(simulations_folder='/home/mfumagal/Data/ImaGene/Binary/Simulations' + str(i) + '.Epoch' + str(e), nr_samples=128, model_name='Marth-' + str(e) + 'epoch-CEU')
     else:
-        # take 3-epoch
+        # take 3-epoch for testing
         myfile = ImaFile(simulations_folder='/home/mfumagal/Data/ImaGene/Binary/Simulations' + str(i) + '.Epoch' + str(3), nr_samples=128, model_name='Marth-' + str(3) + 'epoch-CEU')
     mygene = myfile.read_simulations(parameter_name='selection_coeff_hetero', max_nrepl=5000)
 
@@ -54,9 +54,12 @@ while i <= 10:
     mygene.resize((128, 128))
     mygene.convert()
 
+    mygene.classes = np.array([0,200,400])
+    mygene.subset(get_index_classes(mygene.targets, mygene.classes))
+
     mygene.subset(get_index_random(mygene))
 
-    mygene.targets = to_binary(mygene.targets)
+    mygene.targets = to_categorical(mygene.targets)
 
     # first iteration
     if i == 1:
@@ -68,7 +71,7 @@ while i <= 10:
                     layers.MaxPooling2D(pool_size=(2,2)),
                     layers.Conv2D(filters=64, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.005, l2=0.005), padding='valid'),
                     layers.MaxPooling2D(pool_size=(2,2)),
-                    #layers.Flatten(),
+                    layers.Flatten(),
                     #layers.Dense(units=64, activation='relu'),
                     layers.Dense(units=len(mygene.classes), activation='softmax')])
         model.compile(optimizer='adam',
@@ -80,11 +83,11 @@ while i <= 10:
 
     # training
     if i < 10:
-        score = model.fit(mygene.data, mygene.targets, batch_size=32, epochs=1, verbose=1, validation_split=0.10)
+        score = model.fit(mygene.data, mygene.targets, batch_size=32, epochs=1, verbose=0, validation_split=0.10)
         mynet.update_scores(score)
     else:
         # testing
-        mynet.test = model.evaluate(mygene.data, mygene.targets, batch_size=None, verbose=1)
+        mynet.test = model.evaluate(mygene.data, mygene.targets, batch_size=None, verbose=0)
         mynet.predict(mygene, model)
 
     i += 1
@@ -98,5 +101,5 @@ mygene.save(folder + '/mygene')
 # save final network
 mynet.save(folder + '/mynet')
 
-
+print(mynet.test)
 

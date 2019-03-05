@@ -63,6 +63,7 @@ while i <= 10:
                     layers.MaxPooling2D(pool_size=(2,2)),
                     layers.Conv2D(filters=32, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.005, l2=0.005), padding='valid'),
                     layers.MaxPooling2D(pool_size=(2,2)),
+                    layers.Flatten(),
                     layers.Dense(units=1, activation='sigmoid')])
         model.compile(optimizer='rmsprop',
                     loss='binary_crossentropy',

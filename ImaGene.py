@@ -65,21 +65,24 @@ def to_binary(targets):
 
 
 def to_categorical(targets, wiggle=0, sd=0):
-    nr_classes = len(np.unique(targets))
-    results = np.zeros((len(targets), nr_classes), dtype='float32')
+    classes = np.unique(targets)
+    nr_classes = len(classes)
+    results = np.zeros((len(targets), len(classes)), dtype='float32')
     for counter, value in enumerate(targets):
+        index = np.where(classes == value)[0]
         # add wiggle (if any)
         if wiggle > 0:
-            value += np.random.randint(low=-wiggle, high=wiggle+1)
-            if value < 0:
-                value = 0
-            elif value >= results.shape[1]:
-                value = results.shape[1] - 1
-        results[counter, value] = 1.
+            index += np.random.randint(low=-wiggle, high=wiggle+1)
+            if index < 0:
+                index = 0
+            elif index >= results.shape[1]:
+                index = results.shape[1] - 1
+        results[counter, index] = 1.
         # add sd (if any)
-        probs = scipy.stats.norm.pdf(range(nr_classes), loc=value, scale=sd)
-        results[counter, ] = probs / probs.sum()
-        del probs
+        if sd > 0:
+            probs = scipy.stats.norm.pdf(range(nr_classes), loc=index, scale=sd)
+            results[counter, ] = probs / probs.sum()
+            del probs
     return results
 
 def load_imagene(file):

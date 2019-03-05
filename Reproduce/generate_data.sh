@@ -2,7 +2,7 @@
 
 date
 
-MODE=$1 # Binary or Multi
+MODE=$1 # Binary or Continuous
 
 DIRSOFT=/home/mfumagal/Software
 DIRDATA=/home/mfumagal/Data/ImaGene/$MODE
