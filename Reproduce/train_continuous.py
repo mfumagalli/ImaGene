@@ -78,12 +78,12 @@ while i <= 10:
 
     # training
     if i < 10:
-        score = model.fit(mygene.data, mygene.targets, batch_size=32, epochs=1, verbose=0, validation_split=0.10)
+        score = model.fit(mygene.data, mygene.targets, batch_size=32, epochs=1, verbose=1, validation_split=0.10)
         print(score)
         mynet.update_scores(score)
     else:
         # testing
-        mynet.test = model.evaluate(mygene.data, mygene.targets, batch_size=None, verbose=0)
+        mynet.test = model.evaluate(mygene.data, mygene.targets, batch_size=None, verbose=1)
         mynet.predict(mygene, model)
 
     i += 1
