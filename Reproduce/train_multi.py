@@ -48,9 +48,9 @@ while i <= 10:
     mygene.majorminor()
     mygene.filter_freq(0.01)
     if (m =='Rows') | (m == 'RowsCols'):
-        mygene.sort('rows_dist')
+        mygene.sort('rows_freq')
     if (m =='Cols') | (m == 'RowsCols'):
-        mygene.sort('cols_dist')
+        mygene.sort('cols_freq')
     mygene.resize((128, 128))
     mygene.convert()
 
@@ -65,11 +65,11 @@ while i <= 10:
     if i == 1:
 
         model = models.Sequential([
-                    layers.Conv2D(filters=32, kernel_size=(5,5), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.005, l2=0.005), padding='valid', input_shape=mygene.data.shape[1:4]),
+                    layers.Conv2D(filters=32, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.005, l2=0.005), padding='valid', input_shape=mygene.data.shape[1:4]),
                     layers.MaxPooling2D(pool_size=(2,2)),
-                    layers.Conv2D(filters=64, kernel_size=(5,5), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.005, l2=0.005), padding='valid'),
+                    layers.Conv2D(filters=64, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.005, l2=0.005), padding='valid'),
                     layers.MaxPooling2D(pool_size=(2,2)),
-                    layers.Conv2D(filters=128, kernel_size=(5,5), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.005, l2=0.005), padding='valid'),
+                    layers.Conv2D(filters=64, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.005, l2=0.005), padding='valid'),
                     layers.MaxPooling2D(pool_size=(2,2)),
                     layers.Flatten(),
                     layers.Dense(units=len(mygene.classes), activation='softmax')])
@@ -78,7 +78,7 @@ while i <= 10:
                     metrics=['accuracy'])
         plot_model(model, folder + '/model.png')
 
-        mynet = ImaNet(name='[C32+P]+[C64+P]+[C128+P]')
+        mynet = ImaNet(name='[C32+P]+[C64+P]x2')
 
     # training
     if i < 10:

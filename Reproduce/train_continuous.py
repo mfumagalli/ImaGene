@@ -31,7 +31,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 e = 3
 m = 'RowsCols'
 
-folder = '/home/mfumagal/Data/ImaGene/Continuous/Results/Epoch' + str(e) + '/Wiggle' + str(wiggle) + 'Sd' + str(sd)
+folder = '/home/mfumagal/Data/ImaGene/Continuous/Results/Epoch' + str(e) + '/Wiggle' + str(wiggle) + '-Sd' + str(sd)
 print(folder)
 pathlib.Path(folder).mkdir(parents=True, exist_ok=True)
 
@@ -50,10 +50,9 @@ while i <= 10:
     mygene.resize((128, 128))
     mygene.convert()
 
-    mygene.set_classes(nr_classes=10)
+    mygene.set_classes(nr_classes=11)
     mygene.set_targets()
 
-    mygene.subset(get_index_classes(mygene.targets, mygene.classes))
     mygene.subset(get_index_random(mygene))
 
     mygene.targets = to_categorical(mygene.targets, wiggle=int(wiggle), sd=float(sd))

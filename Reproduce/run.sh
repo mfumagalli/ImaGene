@@ -35,7 +35,7 @@ python train_binary_5x5filter.py > ~/Data/ImaGene/Logs/binary_5x5filter.txt
 # train and test for multiclassification for assessing model misrepresentation
 for e in 3 2 1
 do
-    python train_multi.py $e > ~/Data/ImaGene/Logs/multi2.$e.txt
+    python train_multi.py $e > ~/Data/ImaGene/Logs/multi.$e.txt
 done
 
 # plot confusion matrices for multiclassification

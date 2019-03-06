@@ -553,25 +553,32 @@ class ImaNet:
 
     def predict(self, gene, model):
         """
-        Calculate predicted values (many, I assume this is for testing not for single prediction)
+        Calculate predicted values (many, I assume this is for testing not for single prediction); output is a matrix with rnows=2, row 0 is true, row 1 is MAP, row 2 is posterior mean
         """
         self.values = np.zeros((3, gene.data.shape[0]), dtype='float32')
         if len(gene.targets.shape) == 1:
-            self.values[1,:] = np.where(model.predict(gene.data, batch_size=None)[:,0] < 0.5, 0., 1.)
+            probs = model.predict(gene.data, batch_size=None)[:,0]
+            self.values[1,:] = np.where(probs < 0.5, 0., 1.)
             self.values[0,:] = gene.targets
+            self.values[2,:] = [np.average(gene.classes, weights=probs[i]) for i in range(probs.shape[0])]
         else:
-            self.values[1,:] = np.argmax(model.predict(gene.data, batch_size=None), axis=1)
-            self.values[0,:] = np.argmax(gene.targets, axis=1)
+            probs = model.predict(gene.data, batch_size=None)
+            self.values[1,:] = gene.classes[np.argmax(probs, axis=1)]
+            self.values[0,:] = gene.classes[np.argmax(gene.targets, axis=1)]
+            self.values[2,:] = [np.average(gene.classes, weights=probs[i]) for i in range(probs.shape[0])]
         return 0
 
-    def plot_scatter(self, file=None):
+    def plot_scatter(self, MAP=True, file=None):
         """
         Plot scatter plot (on testing set)
         """
-        plt.scatter(self.values[0,:], self.values[1,:], marker='o')
-        plt.title('Relationship between true and predicted labels')
-        plt.xlabel('True label')
-        plt.ylabel('Predicted label')
+        if MAP == True:
+            plt.scatter(self.values[0,:], self.values[1,:], marker='o')
+        else:
+            plt.scatter(self.values[0,:], self.values[2,:], marker='o')
+        #plt.title('Relationship between true and predicted values')
+        plt.xlabel('True')
+        plt.ylabel('Predicted')
         if file==None:
             plt.show()
         else:
