@@ -1,5 +1,5 @@
 
-# reproduce binary additional analysis (no dense layer, (3,3) filter)
+# reproduce regression analysis (no dense layer, (3,3) filter)
 
 import os
 import gzip
@@ -20,10 +20,6 @@ import pydot # optional
 
 exec(open('/home/mfumagal/Software/ImaGene/ImaGene.py').read())
 
-import sys
-wiggle = str(sys.argv[1])
-sd = str(sys.argv[2])
-
 import pathlib
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
@@ -31,12 +27,12 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 e = 3
 m = 'RowsCols'
 
-folder = '/home/mfumagal/Data/ImaGene/Continuous/Results/Epoch' + str(e) + '/Wiggle' + str(wiggle) + '-Sd' + str(sd)
+folder = '/home/mfumagal/Data/ImaGene/Regression/Results/Epoch' + str(e)
 print(folder)
 pathlib.Path(folder).mkdir(parents=True, exist_ok=True)
 
 i = 1
-while i <= 20:
+while i <= 10:
 
     myfile = ImaFile(simulations_folder='/home/mfumagal/Data/ImaGene/Continuous/Simulations' + str(i) + '.Epoch' + str(e), nr_samples=128, model_name='Marth-' + str(e) + 'epoch-CEU')
     mygene = myfile.read_simulations(parameter_name='selection_coeff_hetero', max_nrepl=100)
@@ -50,13 +46,6 @@ while i <= 20:
     mygene.resize((128, 128))
     mygene.convert()
 
-    mygene.set_classes(nr_classes=11)
-    mygene.set_targets()
-
-    mygene.subset(get_index_random(mygene))
-
-    mygene.targets = to_categorical(mygene.targets, wiggle=int(wiggle), sd=float(sd))
-
     # first iteration
     if i == 1:
 
@@ -68,10 +57,10 @@ while i <= 20:
                     layers.Conv2D(filters=64, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.005, l2=0.005), padding='valid'),
                     layers.MaxPooling2D(pool_size=(2,2)),
                     layers.Flatten(),
-                    layers.Dense(units=len(mygene.classes), activation='softmax')])
-        model.compile(optimizer='adam',
-                    loss='categorical_crossentropy',
-                    metrics=['accuracy'])
+                    layers.Dense(units=1, activation='relu')])
+        model.compile(optimizer='rmsprop',
+                    loss='mse',
+                    metrics=['mae'])
         plot_model(model, folder + '/model.png')
 
         mynet = ImaNet(name='[C32+P]+[C64+P]x2')

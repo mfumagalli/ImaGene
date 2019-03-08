@@ -46,6 +46,11 @@ bash generate_data.sh Continuous
 
 # train and test for continuous parameter
 python train_continuous.py 0 0 > ~/Data/ImaGene/Logs/continuous.0.0.txt
+python train_continuous.py 0 0.5 > ~/Data/ImaGene/Logs/continuous.0.0.5.txt
+python train_continuous.py 1 0 > ~/Data/ImaGene/Logs/continuous.1.0.txt
+
+#python train_regression.py > ~/Data/ImaGene/Logs/regression.txt
+
 
 
 
