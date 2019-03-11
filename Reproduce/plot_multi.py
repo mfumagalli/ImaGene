@@ -12,13 +12,13 @@ import itertools
 
 exec(open('/home/mfumagal/Software/ImaGene/ImaGene.py').read())
 
-fig, ax = plt.subplots(1, 3, sharex='col', sharey='row')
+fig, ax = plt.subplots(1, 2, sharex='col', sharey='row')
 
 classes = [0,200,400]
 m = 'RowsCols'
 
 c = -1
-for e in [3,2,1]:
+for e in [3,1]:
 
     c += 1
     folder = '/home/mfumagal/Data/ImaGene/Multi/Results/Epoch' + str(e) 

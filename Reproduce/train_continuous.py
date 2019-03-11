@@ -35,8 +35,10 @@ folder = '/home/mfumagal/Data/ImaGene/Continuous/Results/Epoch' + str(e) + '/Wig
 print(folder)
 pathlib.Path(folder).mkdir(parents=True, exist_ok=True)
 
+LEN=50
+
 i = 1
-while i <= 20:
+while i <= LEN:
 
     myfile = ImaFile(simulations_folder='/home/mfumagal/Data/ImaGene/Continuous/Simulations' + str(i) + '.Epoch' + str(e), nr_samples=128, model_name='Marth-' + str(e) + 'epoch-CEU')
     mygene = myfile.read_simulations(parameter_name='selection_coeff_hetero', max_nrepl=100)
@@ -65,7 +67,7 @@ while i <= 20:
                     layers.MaxPooling2D(pool_size=(2,2)),
                     layers.Conv2D(filters=64, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.005, l2=0.005), padding='valid'),
                     layers.MaxPooling2D(pool_size=(2,2)),
-                    layers.Conv2D(filters=64, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.005, l2=0.005), padding='valid'),
+                    layers.Conv2D(filters=128, kernel_size=(3,3), strides=(1,1), activation='relu', kernel_regularizer=regularizers.l1_l2(l1=0.005, l2=0.005), padding='valid'),
                     layers.MaxPooling2D(pool_size=(2,2)),
                     layers.Flatten(),
                     layers.Dense(units=len(mygene.classes), activation='softmax')])
@@ -74,10 +76,10 @@ while i <= 20:
                     metrics=['accuracy'])
         plot_model(model, folder + '/model.png')
 
-        mynet = ImaNet(name='[C32+P]+[C64+P]x2')
+        mynet = ImaNet(name='[C32+P]+[C64+P]+[C128+P]')
 
     # training
-    if i < 10:
+    if i < LEN:
         score = model.fit(mygene.data, mygene.targets, batch_size=32, epochs=1, verbose=1, validation_split=0.10)
         print(score)
         mynet.update_scores(score)

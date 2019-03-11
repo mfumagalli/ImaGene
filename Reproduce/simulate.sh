@@ -60,7 +60,7 @@ fi
 
 if [ $4 == Continuous ]; then 
     SELRANGE=`seq 0 1 400` # range and step for the selection coefficient to be estimated in 2*Ne units;
-    NREPL=75 # (250) this is the number of replicates (simulations) per value of selection coefficient to be estimated; 
+    NREPL=250 # (250) this is the number of replicates (simulations) per value of selection coefficient to be estimated; 
 fi
 
 SELTIME=`bc <<< 'scale=4; 600/40000'` # 15kya

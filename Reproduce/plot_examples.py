@@ -13,9 +13,9 @@ import sys
 exec(open('/home/mfumagal/Software/ImaGene/ImaGene.py').read())
 
 e = 3
-s = 300
 i = 1
-index = str(sys.argv[1])
+s = str(sys.argv[1])
+index = str(sys.argv[2])
 
 fig, ax = plt.subplots(2, 2, sharex='col', sharey='row')
 

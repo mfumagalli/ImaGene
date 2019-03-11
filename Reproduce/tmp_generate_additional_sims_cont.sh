@@ -9,7 +9,7 @@ DIRDATA=/home/mfumagal/Data/ImaGene/$MODE
 
 model=3
 
-for repetition in {11..20}
+for repetition in {11..50}
 do
 
 	FNAME=$DIRDATA/Simulations$repetition.Epoch$model
