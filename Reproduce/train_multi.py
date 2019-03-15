@@ -31,7 +31,7 @@ import sys
 e = str(sys.argv[1]) # epoch
 m = 'RowsCols' 
 
-folder = '/home/mfumagal/Data/ImaGene/Multi2/Results/Epoch' + str(e)
+folder = '/home/mfumagal/Data/ImaGene/Multi/Results/Epoch' + str(e)
 print(folder)
 pathlib.Path(folder).mkdir(parents=True, exist_ok=True)
 

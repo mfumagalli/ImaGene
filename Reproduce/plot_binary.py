@@ -56,6 +56,29 @@ fig.show()
 
 ### --------------------------------- ###
 
+# no dense layer
+e = 3
+s = 300
+m = 'RowsCols'
+
+folder = '/home/mfumagal/Data/ImaGene/Binary/Results/NoDense/Epoch' + str(e) + '/S' + str(s) + '/' + str(m)
+print(folder)
+mynet = load_imanet(folder + '/mynet')
+print(mynet.test)
+
+# 5x5
+
+e = 3
+s = 300
+m = 'RowsCols'
+
+folder = '/home/mfumagal/Data/ImaGene/Binary/Results/5x5Filter/Epoch' + str(e) + '/S' + str(s) + '/' + str(m)
+print(folder)
+mynet = load_imanet(folder + '/mynet')
+print(mynet.test)
+
+
+
 
 
 

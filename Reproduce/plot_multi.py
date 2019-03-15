@@ -1,7 +1,7 @@
 
 ### --------------------------------- ###
 
-# plot confusion matrices for binary classification
+# plot confusion matrices for multiclass classification
 
 import numpy as np
 import _pickle as pickle
@@ -33,10 +33,10 @@ for e in [3,1]:
     ax[c].set_yticks(np.arange(len(classes)))
     ax[c].set_xticklabels(classes)
     ax[c].set_yticklabels(classes)
-    ax[c].set_title('Tested on ' + str(e) + '-epoch model')
+    ax[c].set_title('Trained on ' + str(e) + '-epoch model')
     ax[c].set_xlabel('Predicted')
     if c == 0:
-        ax[c].set_ylabel('True\nTrained on 3-epoch model')
+        ax[c].set_ylabel('Tested on 3-epoch model\nTrue')
     else:
         ax[c].set_ylabel('')
     thresh = cm.max() / 1.5
