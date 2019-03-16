@@ -1,5 +1,5 @@
 
-Pipeline on HPC system.
+Pipeline on HPC system (deprecated).
 
 Perform simulations.
 ```
