@@ -560,7 +560,7 @@ class ImaNet:
             probs = model.predict(gene.data, batch_size=None)[:,0]
             self.values[1,:] = np.where(probs < 0.5, 0., 1.)
             self.values[0,:] = gene.targets
-            self.values[2,:] = [np.average(gene.classes, weights=probs[i]) for i in range(probs.shape[0])]
+            #self.values[2,:] = [np.average(gene.classes, weights=probs[i]) for i in range(probs.shape[0])]
         else:
             probs = model.predict(gene.data, batch_size=None)
             self.values[1,:] = gene.classes[np.argmax(probs, axis=1)]
