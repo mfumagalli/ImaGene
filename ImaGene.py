@@ -287,8 +287,8 @@ class ImaGene:
             0
         """
         for i in range(len(self.data)):
-            idx = np.where(np.mean(self.data[0][:,:,0]/255., axis=0) > 0.5)[0]
-            self.data[0][:,idx,0] = 255 - self.data[0][:,idx,0]
+            idx = np.where(np.mean(self.data[i][:,:,0]/255., axis=0) > 0.5)[0]
+            self.data[i][:,idx,0] = 255 - self.data[i][:,idx,0]
         return 0
 
     def filter_freq(self, minimal_maf, verbose=0):
