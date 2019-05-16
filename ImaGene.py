@@ -594,11 +594,9 @@ class ImaNet:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
 
         fig = plt.figure()
-        plt.imshow(cm, interpolation='nearest', cmap=cmap)
-        plt.title(title)
+        plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
+        plt.title('Confusion matrix')
         plt.colorbar()
-        title = 'Confusion matrix'
-        cmap = plt.cm.Blues
 
         tick_marks = np.arange(len(classes))
         plt.xticks(tick_marks, classes, fontsize=8)
