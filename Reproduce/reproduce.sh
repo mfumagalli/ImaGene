@@ -23,17 +23,17 @@ do
     done
 done
 
-# plot confusion matrices
-python plot_binary.py
-
 # plot training for one example
-pyhton plot_train.py
+python plot_train.py
 
 # binary classification without dense layer
 python train_binary_nodense.py > ~/Data/ImaGene/Logs/binary_nodense.txt
 
 # binary classification without dense layer and 5x5 filter
 python train_binary_5x5filter.py > ~/Data/ImaGene/Logs/binary_5x5filter.txt
+
+# plot confusion matrices (this did not work)
+python plot_binary.py
 
 # train and test for multiclassification for assessing model misrepresentation
 for e in 3 2 1
