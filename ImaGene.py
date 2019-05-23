@@ -47,9 +47,11 @@ def get_index_random(genes=[], length=0):
         index (array)
     """
     if length == 0:
-        length = len(genes.data)
-    if length == 0:
-        print('Either length or genes must be provided.')
+        if len(genes) == 0:
+            print('Either length or genes must be provided.')
+        else:
+            length = len(genes.data)
+
     return np.random.permutation(length)
 
 
