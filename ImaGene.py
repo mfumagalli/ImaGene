@@ -531,7 +531,7 @@ class ImaNet:
         epochs = range(1, len(loss) + 1)
 
         plt.figure()
-
+        plt.subplots_adjust(wspace = 0, hspace = 0.4)
         plt.subplot(211)
 
         plt.plot(epochs, loss, 'bo', label='Training loss/mse')
@@ -585,6 +585,7 @@ class ImaNet:
             plt.show()
         else:
             plt.savefig(file)
+            plt.close()
         return 0
 
     def plot_cm(self, classes, file=None):
@@ -608,15 +609,15 @@ class ImaNet:
         for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
             plt.text(j, i, "{:0.4f}".format(cm[i, j]), horizontalalignment="center", color="white" if cm[i, j] > thresh else "black")
 
-        plt.tight_layout()
         plt.ylabel('True label')
         plt.xlabel('Predicted label\naccuracy={:0.4f}'.format(accuracy))
-        plt.show()
+        plt.tight_layout()
 
         if (file==None):
             plt.show()
         else:
             plt.savefig(file)
+            plt.close()
         return 0
 
     def save(self, file):
