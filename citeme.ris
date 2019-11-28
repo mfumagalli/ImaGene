@@ -1,0 +1,21 @@
+TY  - JOUR
+AU  - Torada, Luis
+AU  - Lorenzon, Lucrezia
+AU  - Beddis, Alice
+AU  - Isildak, Ulas
+AU  - Pattini, Linda
+AU  - Mathieson, Sara
+AU  - Fumagalli, Matteo
+PY  - 2019
+DA  - 2019/11/22
+TI  - ImaGene: a convolutional neural network to quantify natural selection from genomic data
+JO  - BMC Bioinformatics
+SP  - 337
+VL  - 20
+IS  - 9
+AB  - The genetic bases of many complex phenotypes are still largely unknown, mostly due to the polygenic nature of the traits and the small effect of each associated mutation. An alternative approach to classic association studies to determining such genetic bases is an evolutionary framework. As sites targeted by natural selection are likely to harbor important functionalities for the carrier, the identification of selection signatures in the genome has the potential to unveil the genetic mechanisms underpinning human phenotypes. Popular methods of detecting such signals rely on compressing genomic information into summary statistics, resulting in the loss of information. Furthermore, few methods are able to quantify the strength of selection. Here we explored the use of deep learning in evolutionary biology and implemented a program, called ImaGene, to apply convolutional neural networks on population genomic data for the detection and quantification of natural selection.
+SN  - 1471-2105
+UR  - https://doi.org/10.1186/s12859-019-2927-x
+DO  - 10.1186/s12859-019-2927-x
+ID  - Torada2019
+ER  - 

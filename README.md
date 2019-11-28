@@ -2,7 +2,17 @@
 
 **ImaGene** implements a supervised machine learning algorithm to predict natural selection and estimate selection coefficients from population genomic data.
 Specifically, it uses a convolutional neural network (CNN) which takes as input haplotypes for a population and locus of interest.
-It outputs confusion matrcies as well as point estimates of the selection coefficient along with its posterior distribution and various metrics of confidence.
+It outputs confusion matrices as well as point estimates of the selection coefficient along with its posterior distribution and various metrics of confidence.
+
+### Citation
+
+The original manuscript can be found [here](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2927-x) and it is open access.
+You should cite it as: \\
+Torada, L., Lorenzon, L., Beddis, A. \textit{et al}. ImaGene: a convolutional neural network to quantify natural selection from genomic data. \textit{BMC Bioinformatics} \textbf{20}, 337 (2019) \\
+doi:10.1186/s12859-019-2927-x \\
+and you can download the citation file [here](citeme.ris)
+
+### Download and installation
 
 Download the repository using git.
 ```
@@ -23,7 +33,7 @@ Otherwise follow the link [here](https://www.java.com/en/download/) if you need 
 Remember that java must be in your /usr/bin folder.
 In unix systems you can create a symbolic link with `ln -s ~/Downloads/java-XXX/jre/bin/java /usr/bin/java`, as an example.
 
-Please look at the jupyter notebook "Quick start" for a short tutorial on using **ImaGene** for predicting natural selection.
+Please look at the jupyter notebook `Quick start` for a short tutorial on using **ImaGene** for predicting natural selection.
 
 The folder Reproduce contains all scripts used for the analyses shown in the manuscript.
 
