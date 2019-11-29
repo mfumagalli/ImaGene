@@ -7,9 +7,12 @@ It outputs confusion matrices as well as point estimates of the selection coeffi
 ### Citation
 
 The original manuscript can be found [here](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2927-x) and it is open access.
-You should cite it as: \\
-Torada, L., Lorenzon, L., Beddis, A. \textit{et al}. ImaGene: a convolutional neural network to quantify natural selection from genomic data. \textit{BMC Bioinformatics} \textbf{20}, 337 (2019) \\
-doi:10.1186/s12859-019-2927-x \\
+You should cite it as:
+
+Torada, L., Lorenzon, L., Beddis, A. _et al_. ImaGene: a convolutional neural network to quantify natural selection from genomic data. _BMC Bioinformatics_ __20__, 337 (2019)
+
+doi:10.1186/s12859-019-2927-x
+
 and you can download the citation file [here](citeme.ris)
 
 ### Download and installation
@@ -33,9 +36,14 @@ Otherwise follow the link [here](https://www.java.com/en/download/) if you need 
 Remember that java must be in your /usr/bin folder.
 In unix systems you can create a symbolic link with `ln -s ~/Downloads/java-XXX/jre/bin/java /usr/bin/java`, as an example.
 
-Please look at the jupyter notebook `Quick start` for a short tutorial on using **ImaGene** for predicting natural selection.
+### Usage
 
-The folder Reproduce contains all scripts used for the analyses shown in the manuscript.
+Please look at the jupyter notebook `Tutorial_binary.ipynb` for a short tutorial on
+how to use **ImaGene** for predicting natural selection with a simple binary classification.
+We also provide examples on how **ImaGene** can be used for multiclass classification in `Tutorial_multiclass.ipynb` and `Tutorial_continuous.ipynb`.
+
+The folder `Reproduce` contains all scripts used for the analyses shown in the manuscript.
+The folder `HPC` should be ignored.
 
 ### Contributors (in alphabetical order)
 Alice Beddis, Matteo Fumagalli, Ulas Isildak, Lucrezia Lorenzon, Luis Torada

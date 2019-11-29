@@ -47,7 +47,7 @@ def get_index_random(genes=[], length=0):
         index (array)
     """
     if length == 0:
-        if len(genes) == 0:
+        if len(genes.data) == 0:
             print('Either length or genes must be provided.')
         else:
             length = len(genes.data)
@@ -399,7 +399,7 @@ class ImaGene:
             return 1
         return 0
 
-    def convert(self, normalise=False, flip=True, verbose=False):
+    def convert(self, normalise=False, flip=True, verbose=True):
         """
         Check for correct data type and convert otherwise. Convert to float numpy arrays [0,1] too. If flip true, then flips 0-1
         """
@@ -618,6 +618,7 @@ class ImaNet:
         else:
             plt.savefig(file)
             plt.close()
+
         return 0
 
     def save(self, file):
