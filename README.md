@@ -13,7 +13,7 @@ Torada, L., Lorenzon, L., Beddis, A. _et al_. ImaGene: a convolutional neural ne
 
 doi:10.1186/s12859-019-2927-x
 
-and you can download the citation file [here](citeme.ris)
+and you can download the citation file in [.ris](citeme.ris) or [.json](citeme.json) format.
 
 ### Download and installation
 
@@ -22,7 +22,7 @@ Download the repository using git.
 git clone https://github.com/mfumagalli/ImaGene
 ```
 
-**ImaGene** runs under Python3 and it inferfaces with keras.
+**ImaGene** runs under Python3 and it is inferfaced with [keras](https://keras.io/).
 We recommend using [conda](https://conda.io/docs/index.html) to set the environment and take care of all dependencies.
 There are detailed instructions on how to download conda for [linux](https://conda.io/docs/user-guide/install/linux.html) and [macOS](https://conda.io/docs/user-guide/install/macos.html).
 
@@ -38,15 +38,18 @@ In unix systems you can create a symbolic link with `ln -s ~/Downloads/java-XXX/
 
 ### Usage
 
-Please look at the jupyter notebook `Tutorial_binary.ipynb` for a short tutorial on
+Please look at the jupyter notebook `binary.ipynb` for a short tutorial on
 how to use **ImaGene** for predicting natural selection with a simple binary classification.
-We also provide examples on how **ImaGene** can be used for multiclass classification in `Tutorial_multiclass.ipynb` and `Tutorial_continuous.ipynb`.
+We also provide examples on how **ImaGene** can be used for multiclass classification in `multiclass.ipynb` and `continuous.ipynb`.
+
+Finally, we provide an utility `generate_dataset.sh` to quickly generate simulations with msms to be used for training. 
+This script takes an input file with all parameters needed for the simulations.
+An example of this file is `params.txt` and tutorials show how to run such simulations in practice.
 
 The folder `Reproduce` contains all scripts used for the analyses shown in the manuscript.
-The folder `HPC` should be ignored.
+The folder `HPC` within `Reproduce` should be ignored.
 
 ### Contributors (in alphabetical order)
 Alice Beddis, Matteo Fumagalli, Ulas Isildak, Lucrezia Lorenzon, Luis Torada
-
 
 

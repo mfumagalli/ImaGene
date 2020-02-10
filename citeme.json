@@ -1,0 +1,64 @@
+{
+    "source": "PubMed",
+    "accessed": {
+        "date-parts": [
+            [
+                2020,
+                2,
+                10
+            ]
+        ]
+    },
+    "id": "pmid:31757205",
+    "title": "ImaGene: a convolutional neural network to quantify natural selection from genomic data",
+    "author": [
+        {
+            "family": "Torada",
+            "given": "Luis"
+        },
+        {
+            "family": "Lorenzon",
+            "given": "Lucrezia"
+        },
+        {
+            "family": "Beddis",
+            "given": "Alice"
+        },
+        {
+            "family": "Isildak",
+            "given": "Ulas"
+        },
+        {
+            "family": "Pattini",
+            "given": "Linda"
+        },
+        {
+            "family": "Mathieson",
+            "given": "Sara"
+        },
+        {
+            "family": "Fumagalli",
+            "given": "Matteo"
+        }
+    ],
+    "container-title-short": "BMC Bioinformatics",
+    "container-title": "BMC bioinformatics",
+    "publisher": "BioMed Central",
+    "ISSN": "1471-2105",
+    "issued": {
+        "date-parts": [
+            [
+                2019,
+                11,
+                22
+            ]
+        ]
+    },
+    "page": "337",
+    "volume": "20",
+    "issue": "Suppl 9",
+    "PMID": "31757205",
+    "PMCID": "PMC6873651",
+    "DOI": "10.1186/s12859-019-2927-x",
+    "type": "article-journal"
+}

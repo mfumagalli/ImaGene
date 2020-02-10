@@ -1,0 +1,53 @@
+
+
+# 1) DIRECTORIES
+
+# path to msms.jar (jave should be in /usr/bin)
+DIRMSMS="/home/mfumagal/Software/msms/lib/msms.jar"
+
+# directory of where you will store the simulated data
+DIRDATA=/home/mfumagal/Downloads/ImaGene
+
+
+# 2) DEMOGRAPHIC MODEL
+
+# You need to specify the demographic model to be used in your simulations. The model should be scaled used a reference effective population size.
+# As an illustration, the following parameters for a demographic model are taken from Marth et al. Genetics 2004 (table 1, European data, 1,2, or 3 epoch model):
+# three epoch: N3=10,000,N2=2,000,N1=20,000,T2=5,00,T1=3,000
+# one epoch: N1=10,000
+# two epoch: N2=10,000, N1=140,000, T1=2000
+
+NREF=10000 # reference effective population size
+DEMO='-eN 0.0875 1 -eN 0.075 0.2 -eN 0 2' # Marth 3-epoch for CEU
+
+# 3) LOCUS AND SAMPLE SIZE
+
+# Then you need to define parameters on the genomic locus to estimate. These parameters are the length (in bp), mutation and recombination rate. You should need to specify how many samples (e.g. haplotypes) you wish to extract from the simulations. Be aware that mutation and recombination rates are scaled in 4*Ne*length, and therefore you need to use the sample NREF specified in the step above.
+
+LEN=80000 # length of the locus in bp
+THETA=48 # mutation rate in 4*Ne*LEN scale; 60 corresponds to 1.5e-8 for Ne=10,000 and 100,000 bp length
+RHO=32 # recombination rate (rho); 40 corresponds to 1e-8 for Ne=10,000 and 100,000 bp length
+NCHROMS=128 # number of chromosomal copies to simulate (e.g. twice the number of individuals for a diploid species)
+
+## 4) SELECTION
+
+# Finally, you need to specify parameters for the positive selection event. These include the time of onset, the position of selected allele, initial frequency, and the range for the selection coefficient to be estimated. Be aware that selection time is scaled in 4*Ne generations while the selection coefficient is in 2*Ne units. The selection coefficient is at the allele level and we assume an additive effect.
+
+SELPOS=`bc <<< 'scale=2; 1/2'` # relative position of selected allele; the example here indicates that the selected allele sits in the middle of the locus
+
+FREQ=`bc <<< 'scale=6; 1/100'` # frequency of selected allele at start of selection; here 0.01
+
+# if you are performing a binary or multiclass classification, you need to define the interval a step, like:
+SELRANGE=`seq 0 100 400` # range and step for the selection coefficient to be estimated in 2*Ne units;
+NREPL=5 # (20k) this is the number of replicates (simulations) per value of selection coefficient to be estimated;
+# while if you wish to perform a continuous estimation, then range should be defined as `seq 0 1 400` with a lower number of replicates, e.g. `NREPL=250`
+
+# this is the selection time in 4*Ne generations ago
+SELTIME=`bc <<< 'scale=4; 600/40000'` # 20kya
+
+# number of batches for each simulation
+NBATCH=10
+
+# nr thread of msms
+NTHREAD=4
+
