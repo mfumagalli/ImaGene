@@ -110,9 +110,10 @@ class ImaFile:
     """
     Parser for real data and simulations
     """
-    def __init__(self, simulations_folder, nr_samples, model_name='N/A'):
+    def __init__(self, simulations_folder, nr_samples, VCF_file_name=None, model_name='N/A'):
         self.simulations_folder = simulations_folder
         self.nr_samples = nr_samples
+        self.VCF_file_name = VCF_file_name
         self.model_name = model_name
         return None
 
@@ -163,7 +164,9 @@ class ImaFile:
         Read simulations and store into compressed numpy arrays
 
         Keyword Arguments:
-            simulations_folder: folder with simulation files
+            parameter_name: name of parameter to estimate
+            max_nrepl: max nr of replicates per simulated msms file
+            verbose: 
 
         Returns:
             an object of class Genes
@@ -227,25 +230,76 @@ class ImaFile:
 
         return gene
 
+    def read_VCF(self, verbose=0):
+        """
+        Read VCF file and store into compressed numpy arrays
+
+        Keyword Arguments:
+            verbose: 
+
+        Returns:
+            an object of class Genes
+        """
+
+        with open(self.VCF_file_name, 'r') as f:
+            lines = [l for l in f if not l.startswith('##')]
+
+        header = lines.pop(0)
+        ind_pos = header.split('\t').index('POS')
+        ind_format = header.split('\t').index('FORMAT')
+
+        nr_individuals = len(header.split('\t')) - ind_format - 1
+        nr_sites = len(lines)
+
+        if verbose == 1:
+            print('Found' + str(nr_individuals) + 'individuals and' + str(nr_sites) + 'sites.')
+
+        haplotypes = np.zeros((1, (nr_individuals * 2), nr_sites, 1), dtype='uint8')
+        pos = np.zeros((1, nr_sites), dtype='int32')
+
+        for j in range(nr_sites):
+            # populate genomic position
+            pos[0][j] = lines[j].split('\t')[ind_pos]
+            # extract genotypes
+            genotypes = lines[j].split('\t')[(ind_format+1):]
+            genotypes[len(genotypes) - 1] = genotypes[len(genotypes) - 1].split('\n')[0]
+            for i in range(len(genotypes)):
+                if i == 0:
+                    i1 = 0
+                    i2 = 1
+                else:
+                    i2 = i*2
+                    i1 = i2 - 1
+                if genotypes[i].split('|')[0] == '1':
+                    haplotypes[0][i1,j] = '255'
+                if genotypes[i].split('|')[1] == '1':
+                    haplotypes[0][i2,j] = '255'
+
+        gene = ImaGene(data=haplotypes, positions=pos)
+
+        return gene
+
 
 class ImaGene:
     """
     A batch of genomic images
     """
-    def __init__(self, data, positions, description, targets=[], parameter_name=None, classes=[]):
+    def __init__(self, data, positions, description=[], targets=[], parameter_name=None, classes=[]):
         self.data = data
         self.positions = positions
         self.description = description
         self.dimensions = (np.zeros(len(self.data)), np.zeros(len(self.data)))
-        self.parameter_name = parameter_name # this is passed by ImaFile.read_simulations()
-        self.targets = np.zeros(len(self.data), dtype='int32')
-        for i in range(len(self.data)):
-            # set targets from file description
-            self.targets[i] = self.description[i][self.parameter_name]
-            # assign dimensions
-            self.dimensions[0][i] = self.data[i].shape[0]
-            self.dimensions[1][i] = self.data[i].shape[1]
-        self.classes = np.unique(self.targets)
+        # if reads from real data, then stop here otherwise fill in all info on simulations
+        if parameter_name != None:
+            self.parameter_name = parameter_name # this is passed by ImaFile.read_simulations()
+            self.targets = np.zeros(len(self.data), dtype='int32')
+            for i in range(len(self.data)):
+                # set targets from file description
+                self.targets[i] = self.description[i][self.parameter_name]
+                # assign dimensions
+                self.dimensions[0][i] = self.data[i].shape[0]
+                self.dimensions[1][i] = self.data[i].shape[1]
+            self.classes = np.unique(self.targets)
         return None
 
     def summary(self):
