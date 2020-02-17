@@ -13,7 +13,7 @@ do
 	do
 		for TIME in $TIMERANGE
 		do
-    			java -jar $DIRMSMS -N $NREF -ms $NCHROMS $NREPL -t $THETA -r $RHO $LEN -Sp $SELPOS -SI $TIME 1 $FREQ -SAA $(($SEL*2)) -SAa $SEL -Saa 0 -Smark $DEMO -thread $NTHREAD | gzip > $FNAME/msms..$SEL..$TIME..txt.gz
+    			java -jar $DIRMSMS -N $NREF -ms $NCHROMS $NREPL -t $THETA -r $RHO $LEN -Sp $SELPOS -SI $TIME 1 $FREQ -SAA $(($SEL*2)) -SAa $SEL -Saa 0 -Smark $DEMO -threads $NTHREADS | gzip > $FNAME/msms..$SEL..$TIME..txt.gz
 		done
 	done
 done

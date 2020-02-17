@@ -110,7 +110,7 @@ class ImaFile:
     """
     Parser for real data and simulations
     """
-    def __init__(self, simulations_folder, nr_samples, VCF_file_name=None, model_name='N/A'):
+    def __init__(self, nr_samples, simulations_folder=None, VCF_file_name=None, model_name='N/A'):
         self.simulations_folder = simulations_folder
         self.nr_samples = nr_samples
         self.VCF_file_name = VCF_file_name
@@ -251,15 +251,18 @@ class ImaFile:
         nr_individuals = len(header.split('\t')) - ind_format - 1
         nr_sites = len(lines)
 
-        if verbose == 1:
+        if verbose == 1 | self.nr_samples!=(nr_individuals*2):
             print('Found' + str(nr_individuals) + 'individuals and' + str(nr_sites) + 'sites.')
 
-        haplotypes = np.zeros((1, (nr_individuals * 2), nr_sites, 1), dtype='uint8')
-        pos = np.zeros((1, nr_sites), dtype='int32')
+        haplotypes = np.zeros(((nr_individuals * 2), nr_sites, 1), dtype='uint8')
+
+        data = []
+        positions = []
+        pos = np.zeros((nr_sites), dtype='int32')
 
         for j in range(nr_sites):
             # populate genomic position
-            pos[0][j] = lines[j].split('\t')[ind_pos]
+            pos[j] = int(lines[j].split('\t')[ind_pos])
             # extract genotypes
             genotypes = lines[j].split('\t')[(ind_format+1):]
             genotypes[len(genotypes) - 1] = genotypes[len(genotypes) - 1].split('\n')[0]
@@ -271,11 +274,16 @@ class ImaFile:
                     i2 = i*2
                     i1 = i2 - 1
                 if genotypes[i].split('|')[0] == '1':
-                    haplotypes[0][i1,j] = '255'
+                    haplotypes[i1,j] = '255'
                 if genotypes[i].split('|')[1] == '1':
-                    haplotypes[0][i2,j] = '255'
+                    haplotypes[i2,j] = '255'
 
-        gene = ImaGene(data=haplotypes, positions=pos)
+        positions.append(pos)
+        data.append(haplotypes)
+        del pos
+        del haplotypes
+
+        gene = ImaGene(data=data, positions=positions)
 
         return gene
 
@@ -289,6 +297,9 @@ class ImaGene:
         self.positions = positions
         self.description = description
         self.dimensions = (np.zeros(len(self.data)), np.zeros(len(self.data)))
+        # initialise dimensions to the first image (in case we have only one)
+        self.dimensions[0][0] = self.data[0].shape[0]
+        self.dimensions[1][0] = self.data[0].shape[1]
         # if reads from real data, then stop here otherwise fill in all info on simulations
         if parameter_name != None:
             self.parameter_name = parameter_name # this is passed by ImaFile.read_simulations()
@@ -314,7 +325,7 @@ class ImaGene:
         """
         nrows = self.dimensions[0]
         ncols = self.dimensions[1]
-        print('An object of %d images' % len(self.data))
+        print('An object of %d image(s)' % len(self.data))
         print('Rows: min %d, max %d, mean %f, std %f' % (nrows.min(), nrows.max(), nrows.mean(), nrows.std()))
         print('Columns: min %d, max %d, mean %f, std %f' % (ncols.min(), ncols.max(), ncols.mean(), ncols.std()))
         return 0
@@ -491,7 +502,10 @@ class ImaGene:
             for i in range(len(self.data)):
                 self.data[i] = 1. - self.data[i]
         if verbose:
-            print('A numpy array with dimensions', self.data.shape, 'and', len(self.targets), 'targets and', len(self.classes), 'classes.')
+            if self.data.shape[0] > 1: 
+                print('A numpy array with dimensions', self.data.shape, 'and', len(self.targets), 'targets and', len(self.classes), 'classes.')
+            else: # one real image
+                print('A numpy array with dimensions', self.data.shape)
         return 0
 
     def set_classes(self, classes=[], nr_classes=0):
