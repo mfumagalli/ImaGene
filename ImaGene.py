@@ -330,7 +330,7 @@ class ImaGene:
         print('Columns: min %d, max %d, mean %f, std %f' % (ncols.min(), ncols.max(), ncols.mean(), ncols.std()))
         return 0
 
-    def plot(self, index):
+    def plot(self, index=0):
         """
         Plot one image in gray scale.
 
@@ -464,7 +464,7 @@ class ImaGene:
             return 1
         return 0
 
-    def convert(self, normalise=False, flip=True, verbose=True):
+    def convert(self, normalise=False, flip=True, verbose=0):
         """
         Check for correct data type and convert otherwise. Convert to float numpy arrays [0,1] too. If flip true, then flips 0-1
         """
