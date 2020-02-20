@@ -103,6 +103,41 @@ def load_imanet(file):
         net = pickle.load(fp)
     return net
 
+def plot_scores(model, gene, classes, H0_class=0):
+    """
+    Plot scores of a predicted image as posterior distribution
+    """
+    probs = model.predict(gene.data, batch_size=None)[0]
+    # Monte Carlo sampling
+    samples_distr = np.random.choice(classes, size = 100000, replace = True, p = probs)
+    # summary statistics and metrics of confidence
+    HPD = pymc3.stats.hpd(samples_distr, alpha = 0.05)
+    BF = (1 - probs[H0_class]) / probs[H0_class]
+    MAP = classes[np.argmax(probs)]
+    MLE = np.average(classes, weights = probs)
+    
+    # plot
+    tick_marks = classes
+    cen_tick = classes
+    plt.hist(samples_distr, color='#a6bddb', bins=len(classes), density=True)
+    plt.xlim([classes.min(), classes.max()])
+    plt.xticks(cen_tick, cen_tick, rotation=45, fontsize=10)
+    plt.yticks(fontsize=10)
+    plt.ylabel('Density', fontsize=12)
+    plt.xlabel('Parameter', fontsize=12)
+    plt.title('Sampled posterior distribution')
+    plt.grid(True)
+    plt.axvline(MLE, label='mean ('+str(round(MLE,2))+')', color='r', linestyle='--')
+    plt.axvline(MAP, label='MAP ('+str(MAP)+')', color='b', linestyle='--')
+    plt.axhline(y=0.0001, xmin=HPD[0]/np.max(classes), xmax=HPD[1]/np.max(classes), c='black', label='95% HPD\nInterval: [{}, {}]'.format(HPD[0],HPD[1]))
+    plt.legend()
+
+    return (MAP, MLE, HPD, BF)
+
+
+
+
+
 
 ### -------- objects ------------------
 
@@ -464,7 +499,7 @@ class ImaGene:
             return 1
         return 0
 
-    def convert(self, normalise=False, flip=True, verbose=0):
+    def convert(self, normalise=False, flip=False, verbose=False):
         """
         Check for correct data type and convert otherwise. Convert to float numpy arrays [0,1] too. If flip true, then flips 0-1
         """
@@ -656,7 +691,7 @@ class ImaNet:
             plt.close()
         return 0
 
-    def plot_cm(self, classes, file=None):
+    def plot_cm(self, classes, file=None, text=False):
         """
         Plot confusion matrix (on testing set)
         """
@@ -674,8 +709,9 @@ class ImaNet:
         plt.yticks(tick_marks, classes, fontsize=8)
 
         thresh = cm.max() / 1.5
-        for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-            plt.text(j, i, "{:0.4f}".format(cm[i, j]), horizontalalignment="center", color="white" if cm[i, j] > thresh else "black")
+        if text==True:
+            for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+                plt.text(j, i, "{:0.4f}".format(cm[i, j]), horizontalalignment="center", color="white" if cm[i, j] > thresh else "black")
 
         plt.ylabel('True label')
         plt.xlabel('Predicted label\naccuracy={:0.4f}'.format(accuracy))
