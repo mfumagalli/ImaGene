@@ -1,8 +1,10 @@
 # ImaGene
 
 **ImaGene** implements a supervised machine learning algorithm to predict natural selection and estimate selection coefficients from population genomic data.
-Specifically, it uses a convolutional neural network (CNN) which takes as input haplotypes for a population and locus of interest.
-It outputs confusion matrices as well as point estimates of the selection coefficient along with its posterior distribution and various metrics of confidence.
+It can be used to estimate any parameter of interest from an evolutionary model.
+
+**ImaGene** implements a convolutional neural network (CNN) which takes as input haplotypes of a _locus_ of interest for a population.
+It outputs confusion matrices as well as point estimates of the selection coefficient (or any parameter of interst) along with its posterior distribution and various metrics of confidence.
 
 ### Citation
 
@@ -38,16 +40,15 @@ In unix systems you can create a symbolic link with `ln -s ~/Downloads/java-XXX/
 
 ### Usage
 
-Please look at the jupyter notebook `binary.ipynb` for a short tutorial on
-how to use **ImaGene** for predicting natural selection with a simple binary classification.
-We also provide examples on how **ImaGene** can be used for multiclass classification in `multiclass.ipynb` and `continuous.ipynb`.
+Please look at the jupyter notebook `01.binary.ipynb` for a tutorial on how to use **ImaGene** for predicting natural selection with a simple binary classification.
+We also provide examples on how **ImaGene** can be used for multiclass classification in `02.multiclass.ipynb` and `03.multiclass_for_continuous.ipynb`.
 
 Finally, we provide an utility `generate_dataset.sh` to quickly generate simulations with msms to be used for training. 
 This script takes an input file with all parameters needed for the simulations.
 An example of this file is `params.txt` and tutorials show how to run such simulations in practice.
+More information can be found in the tutorials.
 
 The folder `Reproduce` contains all scripts used for the analyses shown in the manuscript.
-The folder `HPC` within `Reproduce` should be ignored.
 
 ### Contributors (in alphabetical order)
 Alice Beddis, Matteo Fumagalli, Ulas Isildak, Lucrezia Lorenzon, Luis Torada
