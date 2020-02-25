@@ -40,8 +40,8 @@ In unix systems you can create a symbolic link with `ln -s ~/Downloads/java-XXX/
 
 ### Usage
 
-Please look at the jupyter notebook `01.binary.ipynb` for a tutorial on how to use **ImaGene** for predicting natural selection with a simple binary classification.
-We also provide examples on how **ImaGene** can be used for multiclass classification in `02.multiclass.ipynb` and `03.multiclass_for_continuous.ipynb`.
+Please look at the jupyter notebook `01_binary.ipynb` for a tutorial on how to use **ImaGene** for predicting natural selection with a simple binary classification.
+We also provide examples on how **ImaGene** can be used for multiclass classification in `02_multiclass.ipynb` and `03_multiclass_for_continuous.ipynb`.
 
 Finally, we provide an utility `generate_dataset.sh` to quickly generate simulations with msms to be used for training. 
 This script takes an input file with all parameters needed for the simulations.
