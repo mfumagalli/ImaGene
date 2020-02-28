@@ -2,7 +2,7 @@
 ### 1) DIRECTORIES
 
 DIRMSMS="/home/mfumagal/Software/msms/lib/msms.jar" # path to msms.jar
-DIRDATA=/home/mfumagal/Downloads/ImaGene/Binary # path to data storage
+DIRDATA="/home/mfumagal/Data/ImaGene/Tutorials/Binary" # path to data storage
 
 ### 2) DEMOGRAPHIC MODEL
 
