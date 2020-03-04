@@ -24,9 +24,20 @@ Download the repository using git.
 git clone https://github.com/mfumagalli/ImaGene
 ```
 
-**ImaGene** runs under Python3 and it is inferfaced with [keras](https://keras.io/).
+**ImaGene** runs under Python3 and it is interfaced with [tensorflow](https://www.tensorflow.org) and [keras](https://keras.io/).
 We recommend using [conda](https://conda.io/docs/index.html) to set the environment and take care of all dependencies.
 There are detailed instructions on how to download conda for [linux](https://conda.io/docs/user-guide/install/linux.html) and [macOS](https://conda.io/docs/user-guide/install/macos.html).
+For instance, a suitable environment can be created with
+
+`conda create -n ImaGene python=3.6 tensorflow=2 keras numpy scipy scikit-image scikit-learn matplotlib pydot pymc3 ipython jupyter`
+
+which can be activated with 
+
+`conda activate ImaGene` 
+
+and deactivated with
+
+`conda deactivate`.
 
 **ImaGene** is currently interfaced with [msms](https://www.mabs.at/ewing/msms/index.shtml) but you are required to download it separately following the instructions [here](https://www.mabs.at/ewing/msms/download.shtml).
 Follow the link, download the .zip folder and extract it.
@@ -37,6 +48,8 @@ On unix Debian systems just type `sudo apt-get update && apt-get upgrade; sudo a
 Otherwise follow the link [here](https://www.java.com/en/download/) if you need to install java on other systems.
 Remember that java must be in your /usr/bin folder.
 In unix systems you can create a symbolic link with `ln -s ~/Downloads/java-XXX/jre/bin/java /usr/bin/java`, as an example.
+
+
 
 ### Usage
 

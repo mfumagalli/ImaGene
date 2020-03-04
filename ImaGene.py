@@ -111,7 +111,7 @@ def plot_scores(model, gene, classes, H0_class=0):
     # Monte Carlo sampling
     samples_distr = np.random.choice(classes, size = 100000, replace = True, p = probs)
     # summary statistics and metrics of confidence
-    HPD = pymc3.stats.hpd(samples_distr, alpha = 0.05)
+    HPD = pymc3.stats.hpd(samples_distr, credible_interval = 0.95)
     BF = (1 - probs[H0_class]) / probs[H0_class]
     MAP = classes[np.argmax(probs)]
     MLE = np.average(classes, weights = probs)
