@@ -1,13 +1,11 @@
 
-
 # 1) DIRECTORIES
 
-# path to msms.jar (jave should be in /usr/bin)
+# path to msms.jar (java should be in /usr/bin)
 DIRMSMS="/home/mfumagal/Software/msms/lib/msms.jar"
 
 # directory of where you will store the simulated data
 DIRDATA=/home/mfumagal/Downloads/ImaGene
-
 
 # 2) DEMOGRAPHIC MODEL
 
