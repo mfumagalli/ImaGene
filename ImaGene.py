@@ -603,7 +603,7 @@ class ImaNet:
     """
     def __init__(self, name=None, model=None):
         self.name = name
-        self.scores = {'val_loss': [], 'val_acc': [], 'loss': [], 'acc': [], 'val_mse': [], 'val_mae': [], 'mse': [], 'mae': []}
+        self.scores = {'val_loss': [], 'val_acc': [], 'loss': [], 'acc': [], 'mae': [], 'val_mae': []}
         self.test = np.zeros(2)
         self.values = None # matrix(3,nr_test) true, map, mle
         return None
@@ -621,32 +621,33 @@ class ImaNet:
         """
         Plot training accuracy/mae and loss/mse
         """
-        if 'loss' in self.scores.keys():
-            loss = self.scores['loss']
-            val_loss = self.scores['val_loss']
-            acc = self.scores['acc']
-            val_acc = self.scores['val_acc']
-        else:
-            loss = self.scores['mse']
-            val_loss = self.scores['val_mse']
+        loss = self.scores['loss']
+        val_loss = self.scores['val_loss']
+        # if regression
+        if 'mae' in self.scores.keys():
             acc = self.scores['mae']
             val_acc = self.scores['val_mae']
+            label = 'mae'
+        else: # if not
+            acc = self.scores['acc']
+            val_acc = self.scores['val_acc']
+            label = 'acc'
         epochs = range(1, len(loss) + 1)
 
         plt.figure()
         plt.subplots_adjust(wspace = 0, hspace = 0.4)
         plt.subplot(211)
 
-        plt.plot(epochs, loss, 'bo', label='Training loss/mse')
-        plt.plot(epochs, val_loss, 'b', label='Validation loss/mse')
-        plt.title('Training and validation loss/mse')
+        plt.plot(epochs, loss, 'bo', label='Training loss')
+        plt.plot(epochs, val_loss, 'b', label='Validation loss')
+        plt.title('Training and validation loss')
         plt.legend()
 
         plt.subplot(212)
 
-        plt.plot(epochs, acc, 'bo', label='Training acc/mae')
-        plt.plot(epochs, val_acc, 'b', label='Validation acc/mae')
-        plt.title('Training and validation accuracy/mae')
+        plt.plot(epochs, acc, 'bo', label='Training '+label)
+        plt.plot(epochs, val_acc, 'b', label='Validation '+label)
+        plt.title('Training and validation '+label)
         plt.legend()
 
         if file==None:
@@ -661,6 +662,7 @@ class ImaNet:
         Calculate predicted values (many, I assume this is for testing not for single prediction); output is a matrix with rnows=2, row 0 is true, row 1 is MAP, row 2 is posterior mean
         """
         self.values = np.zeros((3, gene.data.shape[0]), dtype='float32')
+        # if binary or regression
         if len(gene.targets.shape) == 1:
             probs = model.predict(gene.data, batch_size=None)[:,0]
             self.values[1,:] = np.where(probs < 0.5, 0., 1.)
@@ -671,15 +673,17 @@ class ImaNet:
             self.values[1,:] = gene.classes[np.argmax(probs, axis=1)]
             self.values[0,:] = gene.classes[np.argmax(gene.targets, axis=1)]
             self.values[2,:] = [np.average(gene.classes, weights=probs[i]) for i in range(probs.shape[0])]
+
         return 0
 
     def plot_scatter(self, MAP=True, file=None):
         """
         Plot scatter plot (on testing set)
         """
+        # if MAP
         if MAP == True:
             plt.scatter(self.values[0,:], self.values[1,:], marker='o')
-        else:
+        else: # if regression
             plt.scatter(self.values[0,:], self.values[2,:], marker='o')
         #plt.title('Relationship between true and predicted values')
         plt.xlabel('True')

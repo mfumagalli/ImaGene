@@ -1,10 +1,10 @@
 # ImaGene
 
-**ImaGene** implements a supervised machine learning algorithm to predict natural selection and estimate selection coefficients from population genomic data.
-It can be used to estimate any parameter of interest from an evolutionary model.
+**ImaGene** is a supervised machine learning algorithm to predict natural selection and estimate selection coefficients from population genomic data.
+It can be used to estimate any parameter of interest from an evolutionary population genetics model.
 
 **ImaGene** implements a convolutional neural network (CNN) which takes as input haplotypes of a _locus_ of interest for a population.
-It outputs confusion matrices as well as point estimates of the selection coefficient (or any parameter of interst) along with its posterior distribution and various metrics of confidence.
+It outputs confusion matrices as well as point estimates of the selection coefficient (or any parameter of interest) along with its posterior distribution and various metrics of confidence.
 
 ### Citation
 
@@ -27,7 +27,7 @@ git clone https://github.com/mfumagalli/ImaGene
 **ImaGene** runs under Python3 and it is interfaced with [tensorflow](https://www.tensorflow.org) and [keras](https://keras.io/).
 We recommend using [conda](https://conda.io/docs/index.html) to set the environment and take care of all dependencies.
 There are detailed instructions on how to download conda for [linux](https://conda.io/docs/user-guide/install/linux.html) and [macOS](https://conda.io/docs/user-guide/install/macos.html).
-For instance, a suitable environment can be created with
+A suitable environment can be created with
 
 `conda create -n ImaGene python=3.6 tensorflow=2 keras numpy scipy scikit-image scikit-learn matplotlib pydot pymc3 ipython jupyter`
 
@@ -49,12 +49,10 @@ Otherwise follow the link [here](https://www.java.com/en/download/) if you need 
 Remember that java must be in your /usr/bin folder.
 In unix systems you can create a symbolic link with `ln -s ~/Downloads/java-XXX/jre/bin/java /usr/bin/java`, as an example.
 
-
-
 ### Usage
 
 Please look at the jupyter notebook `01_binary.ipynb` for a tutorial on how to use **ImaGene** for predicting natural selection with a simple binary classification.
-We also provide examples on how **ImaGene** can be used for multiclass classification in `02_multiclass.ipynb` and `03_multiclass_for_continuous.ipynb`.
+We also provide examples on how **ImaGene** can be used for multiclass classification in `02_multiclass.ipynb` and `03_multiclass_for_continuous.ipynb` and for regression in `04_regression.ipynb`.
 
 Finally, we provide an utility `generate_dataset.sh` to quickly generate simulations with msms to be used for training. 
 This script takes an input file with all parameters needed for the simulations.
@@ -64,6 +62,8 @@ More information can be found in the tutorials.
 The folder `Reproduce` contains all scripts used for the analyses shown in the manuscript.
 
 ### Contributors (in alphabetical order)
-Alice Beddis, Matteo Fumagalli, Ulas Isildak, Lucrezia Lorenzon, Luis Torada
+
+- main: Matteo Fumagalli (m.fumagalli [at] imperial [dot] ac [dot] uk)
+- others (in alphabetical order): Alice Beddis, Ulas Isildak, Lucrezia Lorenzon, Luis Torada
 
 
