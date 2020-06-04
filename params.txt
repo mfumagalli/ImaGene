@@ -46,6 +46,6 @@ SELTIME=`bc <<< 'scale=4; 600/40000'` # 20kya
 # number of batches for each simulation
 NBATCH=10
 
-# nr thread of msms
-NTHREAD=4
+# nr threads of msms
+NTHREADS=4
 
