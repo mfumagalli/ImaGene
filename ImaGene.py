@@ -603,7 +603,7 @@ class ImaNet:
     """
     def __init__(self, name=None, model=None):
         self.name = name
-        self.scores = {'val_loss': [], 'val_acc': [], 'loss': [], 'acc': [], 'mae': [], 'val_mae': []}
+        self.scores = {'val_loss': [], 'val_accuracy': [], 'loss': [], 'accuracy': [], 'mae': [], 'val_mae': []}
         self.test = np.zeros(2)
         self.values = None # matrix(3,nr_test) true, map, mle
         return None
