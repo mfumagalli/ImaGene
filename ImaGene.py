@@ -624,7 +624,7 @@ class ImaNet:
         loss = self.scores['loss']
         val_loss = self.scores['val_loss']
         # if regression
-        if 'mae' in self.scores.keys():
+        if len(self.scores['mae'])>0:
             acc = self.scores['mae']
             val_acc = self.scores['val_mae']
             label = 'mae'
