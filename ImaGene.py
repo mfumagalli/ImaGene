@@ -629,9 +629,9 @@ class ImaNet:
             val_acc = self.scores['val_mae']
             label = 'mae'
         else: # if not
-            acc = self.scores['acc']
-            val_acc = self.scores['val_acc']
-            label = 'acc'
+            acc = self.scores['accuracy']
+            val_acc = self.scores['val_accuracy']
+            label = 'accuracy'
         epochs = range(1, len(loss) + 1)
 
         plt.figure()
