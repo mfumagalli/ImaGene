@@ -1,0 +1,837 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass[11pt]{article}
+
+    
+    
+    \usepackage[T1]{fontenc}
+    % Nicer default font (+ math font) than Computer Modern for most use cases
+    \usepackage{mathpazo}
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % We will generate all images so they have a width \maxwidth. This means
+    % that they will get their normal width if they fit onto the page, but
+    % are scaled down if they would overflow the margins.
+    \makeatletter
+    \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth
+    \else\Gin@nat@width\fi}
+    \makeatother
+    \let\Oldincludegraphics\includegraphics
+    % Set max figure width to be 80% of text width, for now hardcoded.
+    \renewcommand{\includegraphics}[1]{\Oldincludegraphics[width=.8\maxwidth]{#1}}
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionLabelFormat{nolabel}{}
+    \captionsetup{labelformat=nolabel}
+
+    \usepackage{adjustbox} % Used to constrain images to a maximum size 
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage[utf8x]{inputenc} % Allow utf-8 characters in the tex document
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range 
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    
+
+    
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatability definitions
+    \def\gt{>}
+    \def\lt{<}
+    % Document parameters
+    \title{01\_binary}
+    
+    
+    
+
+    % Pygments definitions
+    
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\expandafter\def\csname PY@tok@w\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\expandafter\def\csname PY@tok@c\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\expandafter\def\csname PY@tok@k\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\expandafter\def\csname PY@tok@o\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ow\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@ne\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\expandafter\def\csname PY@tok@nv\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@no\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ni\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\expandafter\def\csname PY@tok@na\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\expandafter\def\csname PY@tok@nt\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@s\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sd\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@si\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@se\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sr\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@ss\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sx\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@m\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@gh\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gu\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gr\endcsname{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ge\endcsname{\let\PY@it=\textit}
+\expandafter\def\csname PY@tok@gs\endcsname{\let\PY@bf=\textbf}
+\expandafter\def\csname PY@tok@gp\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@go\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\expandafter\def\csname PY@tok@gt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\expandafter\def\csname PY@tok@err\endcsname{\def\PY@bc##1{\setlength{\fboxsep}{0pt}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}
+\expandafter\def\csname PY@tok@kc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kd\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kr\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@bp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@fm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@vc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vg\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sa\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@dl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s2\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s1\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@mb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@il\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mo\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ch\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cm\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cpf\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@c1\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cs\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % Exact colors from NB
+    \definecolor{incolor}{rgb}{0.0, 0.0, 0.5}
+    \definecolor{outcolor}{rgb}{0.545, 0.0, 0.0}
+
+
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+    \hypertarget{binary-classification-using-imagene}{%
+\section{\texorpdfstring{Binary classification using
+\emph{ImaGene}}{Binary classification using ImaGene}}\label{binary-classification-using-imagene}}
+
+    This is a short tutorial to learn the basic usage of \emph{ImaGene}
+which contains a series of objects in python to interact with the
+populat package for deep learning \emph{keras}. In this example our aim
+is to predict whether a given locus is under natural selection from
+population genomic data. Therefore, we will employ \emph{ImaGene} to
+perform a binary classification and we will use the classic example of
+positive selection for lactase persistence in human populations.
+
+The C/T(-13910) variant, or rs4988235, is located on chromosome 2 in the
+\emph{MCM6} gene but influences the lactase \emph{LCT} gene. This SNP is
+associated with the primary haplotype associated with lactose
+intolerance in European populations. In these populations, the common T
+allele is associated with lactase persistence. Individuals who are
+homozygous for C allele are likely to be lactose intolerant. We
+extracted SNP information from a region of 80k base pairs around the
+target variant rs4988235 from the 1000 Genomes Project data for all
+unrelated individuals of CEU population (of European descent). The data
+is in the form of a VCF file.
+
+In this tutorial, you will learn how to: 1. read data from VCF file and
+store it into \emph{ImaGene} objects, 2. run and process simulations to
+be used for training, 3. implement, train and evaluate the neural
+network, 4. deploy the trained network on your genomic data of interest.
+
+    Before starting, we need to load the necessary modules in \emph{python}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{k+kn}{import} \PY{n+nn}{os}
+        \PY{k+kn}{import} \PY{n+nn}{gzip}
+        \PY{k+kn}{import} \PY{n+nn}{\PYZus{}pickle} \PY{k}{as} \PY{n+nn}{pickle}
+        
+        \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+        \PY{k+kn}{import} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{stats}
+        \PY{k+kn}{import} \PY{n+nn}{pymc3}
+        
+        \PY{k+kn}{import} \PY{n+nn}{tensorflow} \PY{k}{as} \PY{n+nn}{tf}
+        \PY{k+kn}{from} \PY{n+nn}{tensorflow} \PY{k}{import} \PY{n}{keras}
+        \PY{k+kn}{from} \PY{n+nn}{keras} \PY{k}{import} \PY{n}{models}\PY{p}{,} \PY{n}{layers}\PY{p}{,} \PY{n}{activations}\PY{p}{,} \PY{n}{optimizers}\PY{p}{,} \PY{n}{regularizers}
+        \PY{k+kn}{from} \PY{n+nn}{keras}\PY{n+nn}{.}\PY{n+nn}{utils} \PY{k}{import} \PY{n}{plot\PYZus{}model}
+        \PY{k+kn}{from} \PY{n+nn}{keras}\PY{n+nn}{.}\PY{n+nn}{models} \PY{k}{import} \PY{n}{load\PYZus{}model}
+        
+        \PY{k+kn}{import} \PY{n+nn}{itertools}
+        \PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+        \PY{k+kn}{import} \PY{n+nn}{skimage}\PY{n+nn}{.}\PY{n+nn}{transform}
+        \PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{metrics} \PY{k}{import} \PY{n}{confusion\PYZus{}matrix}
+        \PY{k+kn}{import} \PY{n+nn}{pydot} \PY{c+c1}{\PYZsh{} optional, but required by keras to plot the model }
+\end{Verbatim}
+
+
+    and \emph{ImaGene}.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{o}{\PYZpc{}}\PY{k}{run} \PYZhy{}i ../ImaGene.py
+\end{Verbatim}
+
+
+    Make sure you created a virtual environment with all dependencies as
+requested. See the main README.md page. Additionally please note that
+this tutorial has been tested with: * python 3.6.10 * numpy 1.18.1 *
+scipy 1.4.1 * keras 2.3.1 * tensorflow 2.1.0 * scikit-image 0.16.2 *
+scikit-learn 0.22.1 * matplotlib 3.1.3 * pydot 1.4.1 * pymc3 3.8 *
+ipython 7.13.0 * jupyter 1.0.0
+
+    \hypertarget{read-data-from-vcf-file-and-store-it-into-imagene-objects}{%
+\subsubsection{\texorpdfstring{1. read data from VCF file and store it
+into \emph{ImaGene}
+objects}{1. read data from VCF file and store it into ImaGene objects}}\label{read-data-from-vcf-file-and-store-it-into-imagene-objects}}
+
+We store the information of the genomic data into an \emph{ImaFile}
+object where we specify the name of the VCF file and the number of
+samples (i.e.~the number of chromosomal copies, twice the number of
+individuals for a diploid organism). The latter parameter is not
+strictly necessary but it is useful to check whether the VCF we are
+analysing contains the data that we expect.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{file\PYZus{}LCT} \PY{o}{=} \PY{n}{ImaFile}\PY{p}{(}\PY{n}{nr\PYZus{}samples}\PY{o}{=}\PY{l+m+mi}{198}\PY{p}{,} \PY{n}{VCF\PYZus{}file\PYZus{}name}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{LCT.CEU.vcf}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    We create an \emph{ImaGene} object by reading the VCF file and
+generating a matrix of haplotypes.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{gene\PYZus{}LCT} \PY{o}{=} \PY{n}{file\PYZus{}LCT}\PY{o}{.}\PY{n}{read\PYZus{}VCF}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+    An \emph{ImaGene} has a series of useful methods. For instance, we can
+have a quick look at the data stored in this object.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{gene\PYZus{}LCT}\PY{o}{.}\PY{n}{summary}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+    As expected, we have one image with 198 rows (equivalent to the number
+of sampled chromosomal copies) and 2200 columns representing all genomic
+positions reported. It is likely that not all of these positions will be
+polymorphic in the CEU sample as the VCF file reports variats across all
+analysed populations.
+
+Similarly, we may want to discard rare variants as they may be more
+associated to errors or be less informative of the scenario we want to
+predict. Assume that we want to ignore monomorphic sites and singletons
+for the derived allele. We can accomplish this with the following
+command.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{gene\PYZus{}LCT}\PY{o}{.}\PY{n}{filter\PYZus{}freq}\PY{p}{(}\PY{l+m+mf}{0.01}\PY{p}{)}
+\end{Verbatim}
+
+
+    If we are unsure about the ancestral/derived polarisation of alleles, we
+can convert them into major/minor alleles using the method
+\texttt{.majorminor()}. We can have a look at the resulting image.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{gene\PYZus{}LCT}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+    As the order on the rows is arbitrary, we can order them (and columns)
+following several criteria. We can do this with \emph{ImaGene} with the
+\texttt{.sort} method which has the following options.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} gene\PYZus{}LCT.sort\PY{o}{?}
+\end{Verbatim}
+
+
+    Assume that we wish to sort only rows by their frequency (with the most
+frequent haplotypes on the top). This can be done with the following
+command (which will also visualise the resulting image).
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{gene\PYZus{}LCT}\PY{o}{.}\PY{n}{sort}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rows\PYZus{}freq}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{gene\PYZus{}LCT}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+    Once we are happy with our data processing (e.g.~filtering and sorting),
+we need to convert the image into an appropriate format which will be
+later used for the prediction. As an illustration, we also flip black
+and white pixels to assign the former to derived (or minor) alleles
+which is the standard representation of genomic data.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{gene\PYZus{}LCT}\PY{o}{.}\PY{n}{convert}\PY{p}{(}\PY{n}{flip}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+        \PY{n}{gene\PYZus{}LCT}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{p}{)}
+        \PY{n}{gene\PYZus{}LCT}\PY{o}{.}\PY{n}{summary}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+    We finally note that our image has 192 columns now, representing the
+number of retained SNPs.
+
+We can save our \emph{ImaGene} object (and load it). It is useful at
+this stage to set up some variables to handle the directories where we
+want to save our data. For instance, in my case I would set this path:
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{c+c1}{\PYZsh{} change to your path}
+        \PY{n}{path} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{/home/mfumagal/Data/ImaGene/Tutorials/}\PY{l+s+s1}{\PYZsq{}}
+\end{Verbatim}
+
+
+    and then I will assume that this data will be saved in the folder
+\texttt{/home/mfumagal/Data/ImaGene/Tutorials/Data}. Please make sure
+you have already created these folders, for instance with the
+\texttt{import\ os} and \texttt{os.makedirs(path)} or with
+\texttt{import\ subprocess} and
+\texttt{subprocess.call("mkdir\ -p\ ...\ ")}. After this, I can easily
+save my data in the desired (already created) folder.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{c+c1}{\PYZsh{} save}
+        \PY{n}{gene\PYZus{}LCT}\PY{o}{.}\PY{n}{save}\PY{p}{(}\PY{n}{file}\PY{o}{=} \PY{n}{path} \PY{o}{+} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Data/gene\PYZus{}LCT\PYZus{}binary}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{c+c1}{\PYZsh{} load}
+        \PY{n}{gene\PYZus{}LCT} \PY{o}{=} \PY{n}{load\PYZus{}imagene}\PY{p}{(}\PY{n}{file}\PY{o}{=}\PY{n}{path} \PY{o}{+} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Data/gene\PYZus{}LCT\PYZus{}binary}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \hypertarget{run-and-process-simulations-to-be-used-for-training-the-neural-network}{%
+\subsubsection{2. run and process simulations to be used for training
+the neural
+network}\label{run-and-process-simulations-to-be-used-for-training-the-neural-network}}
+
+\emph{ImaGene} provides users with an easy interface with \emph{msms} to
+run simulations which will be used for training the network. The script
+\texttt{../generate\_dataset.sh} accepts an input file which specifies
+the parameters of the simulations. A generic file with all descriptions
+is \texttt{../params.txt}. If you want to make changes, you need to open
+the parameter file with a
+\href{https://en.wikipedia.org/wiki/Text_editor}{text editor}, change
+the value of the desired options, save and close it.
+
+We provide an example of this file called \texttt{params\_binary} which
+simulates a total of 200,000 loci of 80kbp either under neutral
+evolution or positive selection with additive effect and an allelic
+selection coefficient of \(1.5\)\% targeting a variant in the middle of
+the region. Selection started 800 generations ago (corresponding to
+20kya with a generation time of 25 years) with an allele frequency of
+\(0.01\). We impose a mutation rate is \(1.5e-8\) per base per
+generation and a recombination rate of \(1e-8\). Finally, the simulated
+population follows a 3-epoch model of bottleneck and expansion as
+proposed by
+\href{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1470693/}{Marth et
+al.~2004} for a European population. We sampled 198 chromosomal copies
+to match our observed data.
+
+It is \textbf{IMPORTANT} you modify the \texttt{params\_binary} to
+specify the directories for \emph{msms} and the folder where all the
+simulations will be stored. These variabiles are set in the first two
+lines of the file, currently set as:
+\texttt{DIRMSMS="/home/mfumagal/Software/msms/lib/msms.jar"\ \#\ path\ to\ msms.jar}
+and
+\texttt{DIRDATA="/home/mfumagal/Data/ImaGene/Tutorials/Binary"\ \#\ path\ to\ data\ storage}
+Change them accordingly, save and close the file.
+
+After this, we can run the following command to perform the simulations.
+This script will split the simulations into different batches to later
+perform training with a ``simulation-on-the-fly'' approach.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{k+kn}{import} \PY{n+nn}{subprocess}
+        \PY{n}{subprocess}\PY{o}{.}\PY{n}{call}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{bash ../generate\PYZus{}dataset.sh params\PYZus{}binary.txt}\PY{l+s+s2}{\PYZdq{}}\PY{o}{.}\PY{n}{split}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+
+
+    Let's perform the first iteration of training. To do that, we need to
+read the first batch of simulations in
+\texttt{{[}..{]}/Binary/Simulations1}and store them into an
+\emph{ImaFile} object.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{file\PYZus{}sim} \PY{o}{=} \PY{n}{ImaFile}\PY{p}{(}\PY{n}{simulations\PYZus{}folder}\PY{o}{=}\PY{n}{path}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Binary/Simulations1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{nr\PYZus{}samples}\PY{o}{=}\PY{l+m+mi}{198}\PY{p}{,} \PY{n}{model\PYZus{}name}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Marth\PYZhy{}3epoch\PYZhy{}CEU}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    Then, we populate an \emph{ImaGene} object by specifying the variable we
+want to estimate/predict (\texttt{selection\_coeff\_hetero}) and how
+many data points per class we wish to retain. As a quick example, we
+will use only 2000 data points per class.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{gene\PYZus{}sim} \PY{o}{=} \PY{n}{file\PYZus{}sim}\PY{o}{.}\PY{n}{read\PYZus{}simulations}\PY{p}{(}\PY{n}{parameter\PYZus{}name}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{selection\PYZus{}coeff\PYZus{}hetero}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{max\PYZus{}nrepl}\PY{o}{=}\PY{l+m+mi}{2000}\PY{p}{)}
+\end{Verbatim}
+
+
+    We can have a look at the data stored in this object.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{summary}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+    We have 4000 images in this object. Recall that with the first line we
+simulated 2 classes and retained 2000 data points for each class. All
+images have 198 rows as expected, as this represents the number of
+simulated haplotypes. However, images have different number of columns,
+ranging from \(\approx 130\) to \(\approx 450\) with an average value of
+\(\approx 295\). The number of columns represents the number of
+polymorphic sites and fixed derived alleles in a \emph{msms} file. This
+number may vary from simulated gene to another. Our observed data for
+LCT has 192 columns.
+
+    As mentioned before, \emph{ImaGene} provides functionalities to
+manipulate our data. Specifically we can do the following: * convert
+ancestral/derived to major/minor allele polarisation * filter out
+columns based on a minimum allele frequency (e.g.~0.01) * sorting rows
+and columns by frequency (or genetic distance from the most frequent
+entry)
+
+We need to follow the same data processing as the one employed for the
+real data.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{filter\PYZus{}freq}\PY{p}{(}\PY{l+m+mf}{0.01}\PY{p}{)}
+        \PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{sort}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rows\PYZus{}freq}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{summary}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+    All images must have the same dimensions. You can explore all different
+options for resizing.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{o}{?}gene\PYZus{}sim.resize
+\end{Verbatim}
+
+
+    One possibility would be to resize them to match the dimensions of the
+real data. In this case it means resize all images to have shape (198,
+192) which can be achieved with the following command.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{resize}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{198}\PY{p}{,} \PY{l+m+mi}{192}\PY{p}{)}\PY{p}{)}
+        \PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{summary}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+    After the data manipulation is done, we need to convert images to proper
+\emph{numpy} float matrices,as previously discussed. The following line
+will do the job (including flipping black/white pixels). Note that the
+\texttt{.convert} method allows you to normalise the data too.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{convert}\PY{p}{(}\PY{n}{flip}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+        \PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{summary}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+    Note that in addition to the genomic data, an \emph{ImaGene} object
+contains information on the corresponding targets (in this case the
+selection coefficient, either 0 or 300 in \(2N_e\) units with
+\(N_e = 10000\)). As an illustration, let's plot one random image per
+class.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{k}{for} \PY{n}{sel} \PY{o+ow}{in} \PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{classes}\PY{p}{:}
+            \PY{n+nb}{print}\PY{p}{(}\PY{n}{sel}\PY{p}{)}
+            \PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{where}\PY{p}{(}\PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{targets} \PY{o}{==} \PY{n}{sel}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+
+
+    Finally we need to randomly shuffle our images before using them for
+training our network. We can easily accomplish this with the following
+line.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{subset}\PY{p}{(}\PY{n}{get\PYZus{}index\PYZus{}random}\PY{p}{(}\PY{n}{gene\PYZus{}sim}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+
+
+    Our targets represent the 2 possible classes. However, since we are
+doing a binary classification, we need to vectorise them as required by
+\emph{keras}.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{targets} \PY{o}{=} \PY{n}{to\PYZus{}binary}\PY{p}{(}\PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{targets}\PY{p}{)}
+\end{Verbatim}
+
+
+    The object is now ready to be used for the classification! You can save
+it.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{save}\PY{p}{(}\PY{n}{file}\PY{o}{=}\PY{n}{path}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Data/gene\PYZus{}sim.binary}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    If you want to load an \emph{ImaGene} object you can use the following
+function.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{gene\PYZus{}sim} \PY{o}{=} \PY{n}{load\PYZus{}imagene}\PY{p}{(}\PY{n}{file}\PY{o}{=}\PY{n}{path}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Data/gene\PYZus{}sim.binary}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \hypertarget{implement-train-and-evaluate-the-neural-network}{%
+\subsubsection{3. implement, train and evaluate the neural
+network}\label{implement-train-and-evaluate-the-neural-network}}
+
+Now that our data is ready, we can build our network. Specifically, we
+can build a model in \emph{keras} with convolutional, pooling and dense
+layers. In this example we have 3 layers of 2D convolutions and pooling
+followed by a fully-connected layer. We just need to specify the
+dimensions of the data in the first layer, and this is specified by the
+option \texttt{input\_shape=gene\_sim.data.shape{[}1:{]}}.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{model} \PY{o}{=} \PY{n}{models}\PY{o}{.}\PY{n}{Sequential}\PY{p}{(}\PY{p}{[}
+                            \PY{n}{layers}\PY{o}{.}\PY{n}{Conv2D}\PY{p}{(}\PY{n}{filters}\PY{o}{=}\PY{l+m+mi}{32}\PY{p}{,} \PY{n}{kernel\PYZus{}size}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{,} \PY{n}{strides}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,} \PY{n}{activation}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{relu}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{kernel\PYZus{}regularizer}\PY{o}{=}\PY{n}{regularizers}\PY{o}{.}\PY{n}{l1\PYZus{}l2}\PY{p}{(}\PY{n}{l1}\PY{o}{=}\PY{l+m+mf}{0.005}\PY{p}{,} \PY{n}{l2}\PY{o}{=}\PY{l+m+mf}{0.005}\PY{p}{)}\PY{p}{,} \PY{n}{padding}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{valid}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{input\PYZus{}shape}\PY{o}{=}\PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{data}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}\PY{p}{)}\PY{p}{,}
+                            \PY{n}{layers}\PY{o}{.}\PY{n}{MaxPooling2D}\PY{p}{(}\PY{n}{pool\PYZus{}size}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+                            \PY{n}{layers}\PY{o}{.}\PY{n}{Conv2D}\PY{p}{(}\PY{n}{filters}\PY{o}{=}\PY{l+m+mi}{32}\PY{p}{,} \PY{n}{kernel\PYZus{}size}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{,} \PY{n}{strides}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,} \PY{n}{activation}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{relu}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{kernel\PYZus{}regularizer}\PY{o}{=}\PY{n}{regularizers}\PY{o}{.}\PY{n}{l1\PYZus{}l2}\PY{p}{(}\PY{n}{l1}\PY{o}{=}\PY{l+m+mf}{0.005}\PY{p}{,} \PY{n}{l2}\PY{o}{=}\PY{l+m+mf}{0.005}\PY{p}{)}\PY{p}{,} \PY{n}{padding}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{valid}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,}
+                            \PY{n}{layers}\PY{o}{.}\PY{n}{MaxPooling2D}\PY{p}{(}\PY{n}{pool\PYZus{}size}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+                            \PY{n}{layers}\PY{o}{.}\PY{n}{Conv2D}\PY{p}{(}\PY{n}{filters}\PY{o}{=}\PY{l+m+mi}{64}\PY{p}{,} \PY{n}{kernel\PYZus{}size}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{,} \PY{n}{strides}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,} \PY{n}{activation}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{relu}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{kernel\PYZus{}regularizer}\PY{o}{=}\PY{n}{regularizers}\PY{o}{.}\PY{n}{l1\PYZus{}l2}\PY{p}{(}\PY{n}{l1}\PY{o}{=}\PY{l+m+mf}{0.005}\PY{p}{,} \PY{n}{l2}\PY{o}{=}\PY{l+m+mf}{0.005}\PY{p}{)}\PY{p}{,} \PY{n}{padding}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{valid}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,}
+                            \PY{n}{layers}\PY{o}{.}\PY{n}{MaxPooling2D}\PY{p}{(}\PY{n}{pool\PYZus{}size}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+                            \PY{n}{layers}\PY{o}{.}\PY{n}{Flatten}\PY{p}{(}\PY{p}{)}\PY{p}{,}
+                            \PY{n}{layers}\PY{o}{.}\PY{n}{Dense}\PY{p}{(}\PY{n}{units}\PY{o}{=}\PY{l+m+mi}{128}\PY{p}{,} \PY{n}{activation}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{relu}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,}
+                            \PY{n}{layers}\PY{o}{.}\PY{n}{Dense}\PY{p}{(}\PY{n}{units}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{activation}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{sigmoid}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+
+
+    Then, let's compile our \emph{keras} model.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{model}\PY{o}{.}\PY{n}{compile}\PY{p}{(}\PY{n}{optimizer}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rmsprop}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                      \PY{n}{loss}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{binary\PYZus{}crossentropy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                      \PY{n}{metrics}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{accuracy}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+
+
+    Let's look at a summary of the model and plot it.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{model}\PY{o}{.}\PY{n}{summary}\PY{p}{(}\PY{p}{)}
+        \PY{n}{plot\PYZus{}model}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{path}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Data/net.binary.png}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    Now we are ready for doing the training on this first batch of data.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{score} \PY{o}{=} \PY{n}{model}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{data}\PY{p}{,} \PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{targets}\PY{p}{,} \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{64}\PY{p}{,} \PY{n}{epochs}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{verbose}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{validation\PYZus{}split}\PY{o}{=}\PY{l+m+mf}{0.10}\PY{p}{)}
+\end{Verbatim}
+
+
+    Remember that you can save a \emph{keras} model with
+\texttt{model.save(\textquotesingle{}net.h5\textquotesingle{})}.
+
+    Now we can initialise a network object \emph{ImaNet}.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{net\PYZus{}LCT} \PY{o}{=} \PY{n}{ImaNet}\PY{p}{(}\PY{n}{name}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{[C32+P]x2+[C64+P]+D128}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    We can keep track of scores (loss and accuracy) across iterations with
+\texttt{.update\_scores}.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{net\PYZus{}LCT}\PY{o}{.}\PY{n}{update\PYZus{}scores}\PY{p}{(}\PY{n}{score}\PY{p}{)}
+\end{Verbatim}
+
+
+    Now we need to repeat the whole procedure described above using all
+remaning batches of data, leaving the last one for testing.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{i} \PY{o}{=} \PY{l+m+mi}{2}
+        \PY{k}{while} \PY{n}{i} \PY{o}{\PYZlt{}} \PY{l+m+mi}{10}\PY{p}{:}
+        
+            \PY{n+nb}{print}\PY{p}{(}\PY{n}{i}\PY{p}{)}
+            
+            \PY{n}{file\PYZus{}sim} \PY{o}{=} \PY{n}{ImaFile}\PY{p}{(}\PY{n}{simulations\PYZus{}folder}\PY{o}{=}\PY{n}{path}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Binary/Simulations}\PY{l+s+s1}{\PYZsq{}} \PY{o}{+} \PY{n+nb}{str}\PY{p}{(}\PY{n}{i}\PY{p}{)}\PY{p}{,} \PY{n}{nr\PYZus{}samples}\PY{o}{=}\PY{l+m+mi}{198}\PY{p}{,} \PY{n}{model\PYZus{}name}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Marth\PYZhy{}3epoch\PYZhy{}CEU}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+            \PY{n}{gene\PYZus{}sim} \PY{o}{=} \PY{n}{file\PYZus{}sim}\PY{o}{.}\PY{n}{read\PYZus{}simulations}\PY{p}{(}\PY{n}{parameter\PYZus{}name}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{selection\PYZus{}coeff\PYZus{}hetero}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{max\PYZus{}nrepl}\PY{o}{=}\PY{l+m+mi}{2000}\PY{p}{)}
+        
+            \PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{filter\PYZus{}freq}\PY{p}{(}\PY{l+m+mf}{0.01}\PY{p}{)}
+            \PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{sort}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rows\PYZus{}freq}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+            \PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{resize}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{198}\PY{p}{,} \PY{l+m+mi}{192}\PY{p}{)}\PY{p}{)}
+            \PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{convert}\PY{p}{(}\PY{n}{flip}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+        
+            \PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{subset}\PY{p}{(}\PY{n}{get\PYZus{}index\PYZus{}random}\PY{p}{(}\PY{n}{gene\PYZus{}sim}\PY{p}{)}\PY{p}{)}
+            \PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{targets} \PY{o}{=} \PY{n}{to\PYZus{}binary}\PY{p}{(}\PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{targets}\PY{p}{)}
+             
+            \PY{n}{score} \PY{o}{=} \PY{n}{model}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{data}\PY{p}{,} \PY{n}{gene\PYZus{}sim}\PY{o}{.}\PY{n}{targets}\PY{p}{,} \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{l+m+mi}{64}\PY{p}{,} \PY{n}{epochs}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{verbose}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{validation\PYZus{}split}\PY{o}{=}\PY{l+m+mf}{0.10}\PY{p}{)}
+            \PY{n}{net\PYZus{}LCT}\PY{o}{.}\PY{n}{update\PYZus{}scores}\PY{p}{(}\PY{n}{score}\PY{p}{)}
+           
+            \PY{n}{i} \PY{o}{+}\PY{o}{=} \PY{l+m+mi}{1}
+\end{Verbatim}
+
+
+    We can plot loss and validation accuracy during the training to check,
+for instance, for overfitting.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{net\PYZus{}LCT}\PY{o}{.}\PY{n}{plot\PYZus{}train}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+    We save (and/or load) the final trained model.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{model}\PY{o}{.}\PY{n}{save}\PY{p}{(}\PY{n}{path}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Data/model.binary.h5}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{c+c1}{\PYZsh{} load}
+        \PY{n}{model} \PY{o}{=} \PY{n}{load\PYZus{}model}\PY{p}{(}\PY{n}{path}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Data/model.binary.h5}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    You can also save the network itself (and load it).
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{net\PYZus{}LCT}\PY{o}{.}\PY{n}{save}\PY{p}{(}\PY{n}{path}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Data/net\PYZus{}LCT.binary}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{c+c1}{\PYZsh{} load}
+        \PY{n}{net\PYZus{}LCT} \PY{o}{=} \PY{n}{load\PYZus{}imanet}\PY{p}{(}\PY{n}{path}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Data/net\PYZus{}LCT.binary}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    Finally, we evaluate the training on the testing dataset, i.e.~the last
+batch of simulated data.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{i} \PY{o}{=} \PY{l+m+mi}{10}
+        \PY{n}{file\PYZus{}sim} \PY{o}{=} \PY{n}{ImaFile}\PY{p}{(}\PY{n}{simulations\PYZus{}folder}\PY{o}{=}\PY{n}{path}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Binary/Simulations}\PY{l+s+s1}{\PYZsq{}} \PY{o}{+} \PY{n+nb}{str}\PY{p}{(}\PY{n}{i}\PY{p}{)}\PY{p}{,} \PY{n}{nr\PYZus{}samples}\PY{o}{=}\PY{l+m+mi}{198}\PY{p}{,} \PY{n}{model\PYZus{}name}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Marth\PYZhy{}3epoch\PYZhy{}CEU}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{gene\PYZus{}sim\PYZus{}test} \PY{o}{=} \PY{n}{file\PYZus{}sim}\PY{o}{.}\PY{n}{read\PYZus{}simulations}\PY{p}{(}\PY{n}{parameter\PYZus{}name}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{selection\PYZus{}coeff\PYZus{}hetero}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{max\PYZus{}nrepl}\PY{o}{=}\PY{l+m+mi}{2000}\PY{p}{)}
+        
+        \PY{n}{gene\PYZus{}sim\PYZus{}test}\PY{o}{.}\PY{n}{filter\PYZus{}freq}\PY{p}{(}\PY{l+m+mf}{0.01}\PY{p}{)}
+        \PY{n}{gene\PYZus{}sim\PYZus{}test}\PY{o}{.}\PY{n}{sort}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{rows\PYZus{}freq}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{gene\PYZus{}sim\PYZus{}test}\PY{o}{.}\PY{n}{resize}\PY{p}{(}\PY{p}{(}\PY{l+m+mi}{198}\PY{p}{,} \PY{l+m+mi}{192}\PY{p}{)}\PY{p}{)}
+        \PY{n}{gene\PYZus{}sim\PYZus{}test}\PY{o}{.}\PY{n}{convert}\PY{p}{(}\PY{n}{flip}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+        
+        \PY{n}{rnd\PYZus{}idx} \PY{o}{=} \PY{n}{get\PYZus{}index\PYZus{}random}\PY{p}{(}\PY{n}{gene\PYZus{}sim\PYZus{}test}\PY{p}{)} \PY{c+c1}{\PYZsh{} no need to create this extra variable}
+        \PY{n}{gene\PYZus{}sim\PYZus{}test}\PY{o}{.}\PY{n}{subset}\PY{p}{(}\PY{n}{rnd\PYZus{}idx}\PY{p}{)}
+        
+        \PY{n}{gene\PYZus{}sim\PYZus{}test}\PY{o}{.}\PY{n}{targets} \PY{o}{=} \PY{n}{to\PYZus{}binary}\PY{p}{(}\PY{n}{gene\PYZus{}sim\PYZus{}test}\PY{o}{.}\PY{n}{targets}\PY{p}{)}
+\end{Verbatim}
+
+
+    Let's report loss and accuracy on the testing set.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{net\PYZus{}LCT}\PY{o}{.}\PY{n}{test} \PY{o}{=} \PY{n}{model}\PY{o}{.}\PY{n}{evaluate}\PY{p}{(}\PY{n}{gene\PYZus{}sim\PYZus{}test}\PY{o}{.}\PY{n}{data}\PY{p}{,} \PY{n}{gene\PYZus{}sim\PYZus{}test}\PY{o}{.}\PY{n}{targets}\PY{p}{,} \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{k+kc}{None}\PY{p}{,} \PY{n}{verbose}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{net\PYZus{}LCT}\PY{o}{.}\PY{n}{test}\PY{p}{)} \PY{c+c1}{\PYZsh{} it will report [loss, accuracy]}
+\end{Verbatim}
+
+
+    For a binary (or multiclass) classification, it is convenient to plot
+the confusion matrix after predicting the responses from the testing
+data.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{net\PYZus{}LCT}\PY{o}{.}\PY{n}{predict}\PY{p}{(}\PY{n}{gene\PYZus{}sim\PYZus{}test}\PY{p}{,} \PY{n}{model}\PY{p}{)}
+        \PY{n}{net\PYZus{}LCT}\PY{o}{.}\PY{n}{plot\PYZus{}cm}\PY{p}{(}\PY{n}{gene\PYZus{}sim\PYZus{}test}\PY{o}{.}\PY{n}{classes}\PY{p}{,} \PY{n}{text}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+
+
+    \hypertarget{deploy-the-trained-network-on-your-genomic-data-of-interest}{%
+\subsubsection{4. deploy the trained network on your genomic data of
+interest}\label{deploy-the-trained-network-on-your-genomic-data-of-interest}}
+
+Finally we can use the trained network to predict natural selection on
+our locus of interest. The output of this command will give us the class
+score (e.g.~this can be interpreted as a posterior probability with
+uniform prior, or scaled likelihood) of said locus under positive
+selection under the conditions we simulated.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor} }]:} \PY{n}{model}\PY{o}{.}\PY{n}{predict}\PY{p}{(}\PY{n}{gene\PYZus{}LCT}\PY{o}{.}\PY{n}{data}\PY{p}{,} \PY{n}{batch\PYZus{}size}\PY{o}{=}\PY{k+kc}{None}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\end{Verbatim}
+
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}
