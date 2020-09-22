@@ -17,7 +17,12 @@ doi:10.1186/s12859-019-2927-x
 
 and you can download the citation file in [.ris](citeme.ris) or [.json](citeme.json) format.
 
+Related studies from the group are on [balancing selection](https://www.biorxiv.org/content/10.1101/2020.07.31.230706v1) and [adaptive introgression](https://www.biorxiv.org/content/10.1101/2020.09.18.301069v1).
+
 ### Download and installation
+
+We provide examples on how to run **ImaGene** on your local machine, on Google Colab or Google Cloud in the `Tutorials` folder.
+Below are instructions to download and install **ImaGene** on your local machine or server.
 
 Download the repository using git.
 ```
@@ -51,8 +56,8 @@ In unix systems you can create a symbolic link with `ln -s ~/Downloads/java-XXX/
 
 ### Usage
 
-Please look at the jupyter notebook `01_binary.ipynb` for a tutorial on how to use **ImaGene** for predicting natural selection with a simple binary classification.
-We also provide examples on how **ImaGene** can be used for multiclass classification in `02_multiclass.ipynb` and `03_multiclass_for_continuous.ipynb` and for regression in `04_regression.ipynb`.
+Please look at the jupyter notebook `01_binary.ipynb` (or the corresponding `Colab` version) for a tutorial on how to use **ImaGene** for predicting natural selection with a simple binary classification.
+We also provide examples on how **ImaGene** can be used for multiclass classification in `02_multiclass.ipynb` and `03_multiclass_for_continuous.ipynb` and for regression in `04_regression.ipynb` (or the corresponding `Colab` versions).
 
 Finally, we provide an utility `generate_dataset.sh` to quickly generate simulations with msms to be used for training. 
 This script takes an input file with all parameters needed for the simulations.
@@ -64,6 +69,6 @@ The folder `Reproduce` contains all scripts used for the analyses shown in the m
 ### Contributors (in alphabetical order)
 
 - main: Matteo Fumagalli (m.fumagalli [at] imperial [dot] ac [dot] uk)
-- others (in alphabetical order): Alice Beddis, Ulas Isildak, Lucrezia Lorenzon, Luis Torada
+- others (in alphabetical order): Alice Beddis, Ulas Isildak, Sirimar (Nook) Laosinwattana, Lucrezia Lorenzon, Luis Torada
 
 
