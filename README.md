@@ -34,15 +34,20 @@ We recommend using [mamba](https://mamba.readthedocs.io/en/latest/) to set the e
 There are detailed instructions on how to download conda for [linux](https://conda.io/docs/user-guide/install/linux.html) and [macOS](https://conda.io/docs/user-guide/install/macos.html).
 A suitable environment can be created with
 
-`mamba create -n ImaGene python=3.6 tensorflow=2 keras numpy scipy scikit-image scikit-learn matplotlib pydot pymc3 ipython jupyter -y`
+`mamba create -n ImaGene python=3 tensorflow=2 keras=2 numpy scipy scikit-image scikit-learn matplotlib pydot pymc3 jupyterlab -y`
 
-which can be activated with 
+Activate the environment with 
 
-`conda activate ImaGene` 
+`conda activate ImaGene`
 
-and deactivated with
+and pip-install _protobuf_ with
+
+`pip3 install --force --no-deps protobuf`
+
+You can deactivate the environment with
 
 `conda deactivate`.
+
 
 **ImaGene** receives training data in [msms](https://www.mabs.at/ewing/msms/index.shtml) format. 
 Unless you have already generated training data, you are required to download _msms_ separately following the instructions [here](https://www.mabs.at/ewing/msms/download.shtml).
