@@ -49,7 +49,7 @@ Unless you have already generated training data, you are required to download _m
 Follow the link, download the .zip folder and extract it.
 The .jar file of interest will be in the `lib` folder.
 There are no requirements for msms to be installed in a specific folder.
-However, msms requires java to be installed.
+However, _msms_ requires java to be installed.
 On unix Debian systems just type `sudo apt-get update && apt-get upgrade; sudo apt-get install default-jdk`
 Otherwise follow the link [here](https://www.java.com/en/download/) if you need to install java on other systems.
 Remember that java must be in your /usr/bin folder.
