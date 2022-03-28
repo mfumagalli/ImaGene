@@ -25,7 +25,7 @@ DEMO='-eN 0.0875 1 -eN 0.075 0.2 -eN 0 2' # Marth 3-epoch for CEU
 LEN=80000 # length of the locus in bp
 THETA=48 # mutation rate in 4*Ne*LEN scale; 60 corresponds to 1.5e-8 for Ne=10,000 and 100,000 bp length
 RHO=32 # recombination rate (rho); 40 corresponds to 1e-8 for Ne=10,000 and 100,000 bp length
-NCHROMS=128 # number of chromosomal copies to simulate (e.g. twice the number of individuals for a diploid species)
+NCHROMS=198 # number of chromosomal copies to simulate (e.g. twice the number of individuals for a diploid species, 198 correspons to CEU sample size in the 1000 Genomes project)
 
 ## 4) SELECTION
 
@@ -41,7 +41,7 @@ NREPL=5 # (20k) this is the number of replicates (simulations) per value of sele
 # while if you wish to perform a continuous estimation, then range should be defined as `seq 0 1 400` with a lower number of replicates, e.g. `NREPL=250`
 
 # this is the selection time in 4*Ne generations ago
-SELTIME=`bc <<< 'scale=4; 600/40000'` # 20kya
+TIMERANGE=`bc <<< 'scale=4; 600/40000'` # 20kya
 
 # number of batches for each simulation
 NBATCH=10
