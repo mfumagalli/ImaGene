@@ -21,7 +21,7 @@ NCHROMS=198 # number of chromosomal copies to simulate
 SELPOS=`bc <<< 'scale=2; 1/2'` # relative position of selected allele
 FREQ=`bc <<< 'scale=6; 1/100'` # frequency of selected allele at start of selection
 SELRANGE=`seq 0 300 300` # at either 0 or 300
-NREPL=10000 # number of replicates (simulations) per value of parameter to be estimated
+NREPL=1000 # number of replicates (simulations) per value of parameter to be estimated
 TIMERANGE=`bc <<< 'scale=4; 800/40000'` # selection time
 NBATCH=10 # number of batches for each simulation
 NTHREADS=4
