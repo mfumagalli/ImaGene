@@ -1,0 +1,28 @@
+
+### 1) DIRECTORIES
+
+DIRMSMS="/home/matteo/Software/msms/msms/lib/msms.jar" # path to msms.jar
+DIRDATA="/home/matteo/Software/ImaGene/Tutorials/Data" # path to data storage
+
+### 2) DEMOGRAPHIC MODEL
+
+NREF=10000 # reference effective population size 
+DEMO='-eN 0.0875 1 -eN 0.075 0.2 -eN 0 2' # demographic model in ms format
+
+# 3) LOCUS AND SAMPLE SIZE
+
+LEN=80000 # length of the locus in bp
+THETA=48 # mutation rate in 4*Ne*LEN scale; 60 corresponds to 1.5e-8 for Ne=10,000 and 100,000 bp length
+RHO=32 # recombination rate (rho) in 4*Ne*r*(LEN-1); 40 corresponds to 1e-8 for Ne=10,000 and 100,000 bp length
+NCHROMS=198 # number of chromosomal copies to simulate
+
+## 4) SELECTION
+
+SELPOS=`bc <<< 'scale=2; 1/2'` # relative position of selected allele
+FREQ=`bc <<< 'scale=6; 1/100'` # frequency of selected allele at start of selection
+SELRANGE=`seq 0 150 300`
+NREPL=400 # number of replicates (simulations) per value of selection coefficient to be estimated
+TIMERANGE=`bc <<< 'scale=4; 800/40000'` # selection time
+NBATCH=10 # number of batches for each simulation
+NTHREADS=4
+
