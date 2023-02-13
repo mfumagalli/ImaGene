@@ -2,7 +2,7 @@
 ### 1) DIRECTORIES
 
 DIRMSMS="/home/matteo/Software/msms/msms/lib/msms.jar" # path to msms.jar
-DIRDATA="/home/matteo/Software/ImaGene/Tutorials/Data" # path to data storage
+DIRDATA="/home/matteo/Software/ImaGene/Tutorials/Workshop/Data" # path to data storage
 
 ### 2) DEMOGRAPHIC MODEL
 
@@ -23,6 +23,6 @@ FREQ=`bc <<< 'scale=6; 1/100'` # frequency of selected allele at start of select
 SELRANGE=`seq 0 150 300`
 NREPL=400 # number of replicates (simulations) per value of selection coefficient to be estimated
 TIMERANGE=`bc <<< 'scale=4; 800/40000'` # selection time
-NBATCH=10 # number of batches for each simulation
+NBATCH=20 # number of batches for each simulation
 NTHREADS=4
 
