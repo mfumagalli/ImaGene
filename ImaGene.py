@@ -625,7 +625,7 @@ class ImaGene:
                     self.data[i] = np.concatenate((padding, image, padding), axis=1)
             
             #when odd no.haplotype column
-            #will result in slight offset of padding
+            #will result in slight offset for window by padding a empty padding on the right hand side
             else:
                 offset_padding = np.zeros((x, 1, c))
                 image = np.concatenate((image, offset_padding), axis = 1)
