@@ -443,6 +443,38 @@ class ImaGene:
                 self.data[i] = (np.where(self.data[i] < 128, 0, 255)).astype('uint8')
         return 0
 
+    def crop(self, window):
+        """        
+        Crop or extend haplotype window for genomic image object. Window size are adjusted from center
+
+        Keyword Arguments:
+            window: haplotype window size
+
+        Returns:
+            0
+        """
+        for i, image in enumerate(self.data):
+            x, y, c = image.shape[0], image.shape[1], image.shape[2]
+            if y == window:
+                continue
+
+            # perform cropping
+            if window < y:
+                starty = y // 2 - window // 2
+                self.data[i] = image[:, starty:starty + window, :]
+
+            # perform padding
+            if window > y:
+                padding_len = (window - y) // 2
+                padding = np.zeros((x, padding_len, c))
+                self.data[i] = np.concatenate((padding, image, padding), axis=1)
+
+            # update dimensions
+            self.dimensions[0][i] = self.data[i].shape[0]
+            self.dimensions[1][i] = self.data[i].shape[1]
+        return 0
+
+
     def sort(self, ordering):
         """
         Sort rows and/or columns given an ordering.

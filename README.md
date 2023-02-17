@@ -17,7 +17,7 @@ doi:10.1186/s12859-019-2927-x
 
 and you can download the citation file in [.ris](citeme.ris) or [.json](citeme.json) format.
 
-Related studies from the group are on [balancing selection](https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.13379) and [adaptive introgression](https://elifesciences.org/articles/64669).
+Related studies from the group are on [balancing selection](https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.13379), [adaptive introgression](https://elifesciences.org/articles/64669), and a [review](https://doi.org/10.1093/gbe/evad008) paper.
 
 ### Download and installation
 
@@ -74,7 +74,7 @@ The folder `Reproduce` contains all scripts used for the analyses shown in the m
 
 ### Contributors (in alphabetical order)
 
-- main: Matteo Fumagalli (m.fumagalli [at] imperial [dot] ac [dot] uk)
-- others (in alphabetical order): Alice Beddis, Ulas Isildak, Sirimar (Nook) Laosinwattana, Lucrezia Lorenzon, Luis Torada
+- main: [Matteo Fumagalli](https://www.qmul.ac.uk/sbbs/staff/matteo-fumagalli.html)
+- others (in alphabetical order): Alice Beddis, Ulas Isildak, Sirimar (Nook) Laosinwattana, Lucrezia Lorenzon, Jacky Pui Chung Siu, Luis Torada
 
 
