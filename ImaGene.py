@@ -597,6 +597,59 @@ class ImaGene:
             pickle.dump(self, fp)
         return 0
 
+    def crop(self, window):
+        """
+        crop or extend haplotype window for genomic image object. Window size are adjusted from center
+
+        Arguments:
+            window: haplotype window size
+
+        """
+
+        for i, image in enumerate(self.data):
+            x, y, c = image.shape[0], image.shape[1], image.shape[2]
+
+            if y == window:
+                continue
+            
+            #when even no. haplotype column
+            if y % 2 == 0:
+                if window < y:
+                    starty = y // 2 - window // 2
+                    self.data[i] = image[:, starty:starty + window, :]
+
+                #perform padding
+                else:
+                    padding_len = (window - y) // 2
+                    padding = np.zeros((x, padding_len, c))
+                    self.data[i] = np.concatenate((padding, image, padding), axis=1)
+            
+            #when odd no.haplotype column
+            #will result in slight offset of padding
+            else:
+                offset_padding = np.zeros((x, 1, c))
+                image = np.concatenate((image, offset_padding), axis = 1)
+                #perform cropping
+                if window < y:
+                    starty = y // 2 - window // 2
+                    self.data[i] = image[:, starty:starty + window, :]
+
+                #perform padding
+                else:
+                    padding_len = (window - y) // 2
+                    padding = np.zeros((x, padding_len, c))
+                    self.data[i] = np.concatenate((padding, image, padding), axis=1)
+
+
+            #update dimension
+            self.dimensions[0][i] = self.data[i].shape[0]
+            self.dimensions[1][i] = self.data[i].shape[1]
+
+        return None
+
+            
+                
+
 
 class ImaNet:
     """
@@ -738,6 +791,8 @@ class ImaNet:
             pickle.dump(self, fp)
 
         return 0
+
+
 
 
 
