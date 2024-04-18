@@ -49,8 +49,8 @@ You can deactivate the environment with
 `conda deactivate`.
 
 
-**ImaGene** receives training data in [msms](https://www.mabs.at/ewing/msms/index.shtml) format. 
-Unless you have already generated training data, you are required to download _msms_ separately following the instructions [here](https://www.mabs.at/ewing/msms/download.shtml).
+**ImaGene** receives training data in [msms](https://www.mabs.at/publications/software-msms) format. 
+Unless you have already generated training data, you are required to download _msms_ separately following the instructions [here](https://www.mabs.at/publications/software-msms/downloads/).
 Follow the link, download the .zip folder and extract it.
 The .jar file of interest will be in the `lib` folder.
 There are no requirements for msms to be installed in a specific folder.
