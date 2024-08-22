@@ -49,11 +49,7 @@ You can deactivate the environment with
 `conda deactivate`.
 
 
-<<<<<<< HEAD
-**ImaGene** receives training data in [msms](https://www.mabs.at/publications/software-msms/) format. 
-=======
-**ImaGene** receives training data in [msms](https://www.mabs.at/publications/software-msms) format. 
->>>>>>> ea74eae1be3c56646df16e546bc4c961aa66a09c
+**ImaGene** receives training data in _msms_.
 Unless you have already generated training data, you are required to download _msms_ separately following the instructions [here](https://www.mabs.at/publications/software-msms/downloads/).
 Follow the link, download the .zip folder and extract it.
 The .jar file of interest will be in the `lib` folder.
