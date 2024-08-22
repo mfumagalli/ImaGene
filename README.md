@@ -38,7 +38,7 @@ A suitable environment can be created with
 
 Activate the environment with 
 
-`conda activate ImaGene`
+`mamba activate ImaGene`
 
 and pip-install _protobuf_ with
 
@@ -46,7 +46,7 @@ and pip-install _protobuf_ with
 
 You can deactivate the environment with
 
-`conda deactivate`.
+`mamba deactivate`.
 
 
 **ImaGene** receives training data in _msms_.
