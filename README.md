@@ -34,7 +34,7 @@ We recommend using [mamba](https://mamba.readthedocs.io/en/latest/) to set the e
 There are detailed instructions on how to download conda for [linux](https://conda.io/docs/user-guide/install/linux.html) and [macOS](https://conda.io/docs/user-guide/install/macos.html).
 A suitable environment can be created with
 
-`mamba create -n ImaGene python=3 tensorflow=2 keras=2 numpy scipy scikit-image scikit-learn matplotlib pydot arviz jupyterlab -y`
+`mamba create -n ImaGene python=3 tensorflow=2 keras=2 numpy scipy scikit-image scikit-learn matplotlib pydot arviz jupyter jupyterlab -y`
 
 Activate the environment with 
 
